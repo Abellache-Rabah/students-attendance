@@ -68,15 +68,14 @@ export default function Signup(params) {
         }
       );
       if (res.data.res) {
-        toast.update(wait, { render: "Send code", type: "success", isLoading: false, data: 2000 })
+        toast.update(wait, { render: "Send code", type: "success", isLoading: false,autoClose:2000})
         setIshedden((prevValue) => !prevValue)
       } else {
-        console.log(res.data);
         toast.update(wait, { render: res.data.msg, type: "error", isLoading: false, data: 2000 })
       }
     } else {
       await new Promise((resolve) => setTimeout(resolve, 1000))
-      toast.update(wait, { render: "chek your information", type: "error", isLoading: false, data: 2000 })
+      toast.update(wait, { render: "chek your information", type: "error", isLoading: false, data: 2000})
 
     }
   }
@@ -99,6 +98,7 @@ export default function Signup(params) {
     fetchspecialist()
   }, [])
   async function send() {
+    const wait = toast.loading("Please wait...")
     let res;
     
     let req = {
@@ -122,7 +122,7 @@ export default function Signup(params) {
       );
 
       if (res.data.res) {
-        dispatch(setAcount(data.data.data))
+        dispatch(setAcount(res.data.data))
         toast.update(wait, { render: "Success", type: "success", isLoading: false, autoClose: true });
         await new Promise((resolve) => setTimeout(resolve, 1000))
         navigate("/");
