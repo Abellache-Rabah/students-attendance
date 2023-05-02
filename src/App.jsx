@@ -26,9 +26,9 @@ function App() {
                   className={"hidden md:block w-fit col-start-1 h-full col-end-2"}
                 />
                 <Routes>
-                  <Route exact path="/Dashboard" element={<Dashboard />} />
-                  <Route exact path="/Rooms" element={<Rooms />} />
-                  <Route exact path="/CreateRoom" element={<CreateRoom />} />
+                  <Route exact path="/Dashboard/*" element={<Dashboard />} />
+                  <Route exact path="/Rooms/*" element={<Rooms />} />
+                  <Route exact path="/CreateRoom/*" element={<CreateRoom />} />
 
                 </Routes>
               </div>
