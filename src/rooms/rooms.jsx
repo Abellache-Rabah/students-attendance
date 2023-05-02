@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { Table, Checkbox, Pagination } from 'flowbite-react'
 import Nav from '../nav/nav';
 import axios from 'axios';
-import { initAccordions, initDials } from 'flowbite';
-import { data } from 'autoprefixer';
 import { useDispatch,useSelector } from 'react-redux';
 import { fetchRooms,setRooms } from '../redux/roomsReducer';
 import RoomParam from './roomParam';
-export default function Rooms() {
+import { toast } from 'react-toastify';
+export default memo( function Rooms() {
     const dispatch = useDispatch()
     const  rooms  = useSelector(state => state.rooms)
     const [currentPage, setCurrentPage] = useState(1);
@@ -15,9 +14,6 @@ export default function Rooms() {
     const [min, setMin] = useState(0)
     const [max, setMax] = useState(5)
     const [length, setLenght] = useState(0)
-    const handlePage = () => {
-        setCurrentPage(currentPage + 1)
-    }
     useEffect(() => {
         if (rooms.rooms.length == 0) {
             console.log(rooms.rooms.length);
@@ -26,10 +22,10 @@ export default function Rooms() {
         console.log(rooms.rooms.length);
     }, [])
     useEffect(()=> {
+        const wait = toast.loading("Please wait...")
         setLenght(rooms.rooms.length)  
     })
     const removeRoom = async (id) => {
-        console.log(id);
         const req = {
             email: store.email,
             password: store.password,
@@ -41,14 +37,15 @@ export default function Rooms() {
                 "Content-Type": "application/x-www-form-urlencoded"
             }
         }).then(res => {
-            console.log(res.data);
+            toast.update(wait, { render: "Room deleted", type: "success", isLoading: false, autoClose: true, delay: 2000})
             dispatch(setRooms({ id: id }))
         }).catch(err => {
+            toast.update(wait, { render: "Error", type: "error", isLoading: false, autoClose: true, delay: 2000 })
             console.log(err);
         })
     }
     return (
-        <div className='col-start-2 col-end-6 gap-y-2git remote add origin https://github.com/GHanamaAhmed/students-attendance-web-site.git flex flex-col items-center'>
+        <div className='col-start-2 col-end-6 overflow-y-scroll gap-y-2git remote add origin https://github.com/GHanamaAhmed/students-attendance-web-site.git flex flex-col items-center'>
             <Nav />
             <RoomParam />
             <div className='w-full h-full flex justify-center items-center'>
@@ -147,3 +144,4 @@ export default function Rooms() {
         </div>
     )
 }
+)

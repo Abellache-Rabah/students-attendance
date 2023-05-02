@@ -25,6 +25,7 @@ export default memo( function Nav() {
                     <input type="text" placeholder='shearch' ref={shearch} className='w-1/2 border-none placeholder:opacity-50 bg-transparent focus:ring-0 py-2' />
                     <button className='bg-orange-400 h-12 text-white py-2 px-4 rounded-lg'>Shearch</button>
                 </div>
+               
             </div>
             <div className='flex gap-2 hidden md:block'>
                 <Dropdown inline={true} label={<Avatar rounded={true} />} placement='auto'>

@@ -21,9 +21,9 @@ function App() {
           element={
             <>
               <Header />
-              <div className="md:grid md:grid-cols-4 md:grid-rows-1 md:h-full">
+              <div className="md:grid md:grid-cols-4 h-full md:grid-rows-1 md:h-full">
                 <ListHeader
-                  className={"hidden md:block w-fit col-start-1 col-end-2"}
+                  className={"hidden md:block w-fit col-start-1 h-full col-end-2"}
                 />
                 <Routes>
                   <Route exact path="/Dashboard" element={<Dashboard />} />

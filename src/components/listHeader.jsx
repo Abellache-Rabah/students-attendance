@@ -4,7 +4,7 @@ import { HiChartPie, HiInbox, HiUser, HiLogout } from 'react-icons/hi'
 import { Link } from 'react-router-dom'
 export default function ListHeader({ className }) {
     return (
-        <div className={`md:w-full w-fit ${className} bg-gray-50 h-full shadow-md z-50`}>
+        <div className={`md:w-full w-fit ${className} bg-gray-50 shadow-md z-50`}>
             <>
                 <aside
                     id="separator-sidebar"
