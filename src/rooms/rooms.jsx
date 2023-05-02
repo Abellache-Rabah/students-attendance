@@ -2,40 +2,32 @@ import React, { useEffect, useState } from 'react'
 import { Table, Checkbox, Pagination } from 'flowbite-react'
 import Nav from '../nav/nav';
 import axios from 'axios';
-import { useSelector } from "react-redux"
 import { initAccordions, initDials } from 'flowbite';
 import { data } from 'autoprefixer';
+import { useDispatch,useSelector } from 'react-redux';
+import { fetchRooms,setRooms } from '../redux/roomsReducer';
 import RoomParam from './roomParam';
 export default function Rooms() {
+    const dispatch = useDispatch()
+    const  rooms  = useSelector(state => state.rooms)
     const [currentPage, setCurrentPage] = useState(1);
     const store = useSelector(state => state.account)
-    const [rooms, setRooms] = useState([])
     const [min, setMin] = useState(0)
     const [max, setMax] = useState(5)
     const [length, setLenght] = useState(0)
     const handlePage = () => {
         setCurrentPage(currentPage + 1)
     }
-    const fetchRooms = async () => {
-        const req = {
-            email: store.email,
-            password: store.password
-        }
-        await axios.post("https://simpleapi-p29y.onrender.com/teacher/rooms", req, {
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            }
-        }).then(res => {
-            console.log(res.data);
-            setRooms(prev => res.data.data)
-            setLenght(prev => res.data.data.length)
-        }).catch(err => {
-            console.log(err);
-        })
-    }
     useEffect(() => {
-        fetchRooms()
+        if (rooms.rooms.length == 0) {
+            console.log(rooms.rooms.length);
+            dispatch(fetchRooms(store))  
+        }
+        console.log(rooms.rooms.length);
     }, [])
+    useEffect(()=> {
+        setLenght(rooms.rooms.length)  
+    })
     const removeRoom = async (id) => {
         console.log(id);
         const req = {
@@ -50,7 +42,7 @@ export default function Rooms() {
             }
         }).then(res => {
             console.log(res.data);
-            setRooms(prev => prev.filter(item => item["_id"] != id))
+            dispatch(setRooms({ id: id }))
         }).catch(err => {
             console.log(err);
         })
@@ -95,7 +87,7 @@ export default function Rooms() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {rooms && rooms.map((room, index) => {
+                                {rooms?.rooms && rooms.rooms.map((room, index) => {
                                     if (index >= min && index < max) {
                                         return (
                                             <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
@@ -133,22 +125,21 @@ export default function Rooms() {
                             className="flex items-center justify-between p-4"
                             aria-label="Table navigation"
                         >
-                            <span className="hidden md:block text-sm font-normal text-gray-500 dark:text-gray-400">
-                                Showing{" "}
-                                <span className="font-semibold text-gray-900 dark:text-white">{min + 1}-{max}</span>{" "}</span>
-                            <Pagination
-                                currentPage={currentPage}
-                                showIcons={true}
-                                totalPages={Math.ceil((length / 5))}
-                                onPageChange={(page) => {
-                                    setMin((page - 1) * 5)
-                                    setMax(page * 5)
-                                    setCurrentPage(page)
-                                }}
-                                previousLabel={''}
-                                nextLabel={''}
-                            />
+                                <Pagination
+                                    currentPage={currentPage}
+                                    layout="table"
+                                    onPageChange={(page) => {
+                                        setMin((page - 1) * 5)
+                                        setMax(page * 5)
+                                        setCurrentPage(page)
+                                    }}
+                                    showIcons={true}
+                                    totalPages={Math.ceil(length / 5)}
+                                />
+                                <button className='text-red-600 py-2 px-4 rounded-lg'>Delete</button>
+                            
                         </nav>
+
                     </div>
                 </div>
 

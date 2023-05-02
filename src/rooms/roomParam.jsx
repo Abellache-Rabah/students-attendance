@@ -35,7 +35,7 @@ export default function RoomParam() {
                 <div className='relative rounded-full bg-secondary'>
                     <select name="speaciality" id="speaciality" className='border-none focus:ring-0 bg-transparent py-3 placeholder:text-center placeholder:text-xl'>
                     {sp && sp.map((e ,i)=> {
-                            return (<option value={e.specialist}>{e.specialist}</option>)
+                            return (<option key={i} value={e.specialist}>{e.specialist}</option>)
                     })}
                     </select>
                 </div>
@@ -50,7 +50,7 @@ export default function RoomParam() {
                     </select>
                 </div>
             </div>
-            <div className='w-full flex flex-col md:flex-row justify-between items-center '>
+            <div className='w-full mb-4 md:mb-0 flex flex-col md:flex-row justify-between items-center '>
                 <button className='bg-orange-400 text-white  px-4 rounded-lg md:rounded-bl-3xl md:rounded-br-none md:rounded-tr-none  py-3  mt-5 w-4/5 md:w-1/2'>Create with qrcode</button>
                 <button className='bg-blue-400 text-white  px-4 rounded-lg  md:rounded-br-3xl md:rounded-bl-none md:rounded-tl-none py-3 mt-5 w-4/5 md:w-1/2'>Create with code</button>
             </div>

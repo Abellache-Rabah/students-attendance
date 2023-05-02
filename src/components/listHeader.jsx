@@ -8,7 +8,7 @@ export default function ListHeader({ className }) {
             <>
                 <aside
                     id="separator-sidebar"
-                    className="fixed top-0 bg-gray-50 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
+                    className="h-full w-full"
                     aria-label="Sidebar"
                 >
                     <div className="h-full w-full px-3 py-4 overflow-y-auto flex flex-col justify-between bg-gray-50 dark:bg-gray-800">

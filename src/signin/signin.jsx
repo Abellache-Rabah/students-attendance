@@ -1,11 +1,14 @@
-import React, { useRef, useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { wait } from "@testing-library/user-event/dist/utils";
-
+import { setAcount } from "../redux/accountReducer";
+import { useDispatch, useSelector } from "react-redux"
 export default function Signin() {
+  const account = useSelector((state) => state.account)
+  const dispatch = useDispatch();
   const [state, setState] = useState({
     invalidinpute:
       "border-gray-300 text-gray-900 dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:border-blue-600",
@@ -18,21 +21,16 @@ export default function Signin() {
   const toastId = React.useRef(null);
 
   async function send() {
-  
-   
-
-    
+    const wait = toast.loading("Please wait...")
     let req;
     let data;
     if (validateEmailUsername(emailuser.current.value)) {
-      if (String(emailuser.current.value).includes("@")) {
-        req = {
-          email: emailuser.current.value,
-          password: password.current.value,
-        };
-      }
+      req = {
+        email: emailuser.current.value,
+        password: password.current.value,
+      };
       data = await axios.post(
-        "https://simpleapi-p29y.onrender.com/student/signin",
+        "https://simpleapi-p29y.onrender.com/teacher/signin",
         req,
         {
           headers: {
@@ -40,16 +38,17 @@ export default function Signin() {
           },
         }
       );
-
       if (data.data.res) {
-        navigate("/home", { state: req });
+        dispatch(setAcount(data.data.data))
+        toast.update(wait, { render: "Success", type: "success", isLoading: false, autoClose: true });
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+        navigate("/");
       } else {
-        
-     
-        toast.error(data.data.mes, {
-          position: toast.POSITION.TOP_RIGHT
-        })
+
+        toast.update(wait, { render: data.data.mes, type: "error", isLoading: false, delay: 1000, autoClose: true });
       }
+    } else {
+      toast.update(wait, { render: "check your information", type: "error", isLoading: false, delay: 1000, autoClose: true });
     }
   }
 
@@ -59,10 +58,7 @@ export default function Signin() {
         .toLowerCase()
         .match(
           /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        ) ||
-      String(email)
-        .toLowerCase()
-        .match(/^[a-z0-9_]+$/)
+        )
     );
   }
   function handle(e) {
@@ -143,7 +139,7 @@ export default function Signin() {
         >
           Sign in
         </button>
-      
+
         {/* <GoogleLogin
           onSuccess={credentialResponse => {
             console.log(credentialResponse);
