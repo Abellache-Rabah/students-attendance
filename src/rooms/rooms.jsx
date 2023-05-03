@@ -7,16 +7,10 @@ import { fetchRooms, setRooms } from '../redux/roomsReducer';
 import RoomParam from './roomParam';
 import Qrdiv from './qrdiv';
 import { toast } from 'react-toastify';
-<<<<<<< HEAD
 
 
 export default memo( function Rooms() {
 
-=======
-import { Navigate, Route, Routes } from 'react-router-dom';
-import Room from './room';
-export default memo(function Rooms() {
->>>>>>> 07299050342105a8c00e7763f5c5046e558d9780
     const dispatch = useDispatch()
     const rooms = useSelector(state => state.rooms)
     const [currentPage, setCurrentPage] = useState(1);
@@ -28,10 +22,6 @@ export default memo(function Rooms() {
         if (rooms.rooms.length == 0) {
             dispatch(fetchRooms(store))
         }
-<<<<<<< HEAD
-
-=======
->>>>>>> 07299050342105a8c00e7763f5c5046e558d9780
     }, [])
     useEffect(() => {
         const wait = toast.loading("Please wait...")
