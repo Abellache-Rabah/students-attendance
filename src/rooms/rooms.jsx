@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchRooms, setRooms } from '../redux/roomsReducer';
 import RoomParam from './roomParam';
+import Qrdiv from './qrdiv';
 import { toast } from 'react-toastify';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Room from './room';
