@@ -5,8 +5,12 @@ import axios from 'axios';
 import { useDispatch,useSelector } from 'react-redux';
 import { fetchRooms,setRooms } from '../redux/roomsReducer';
 import RoomParam from './roomParam';
+import Qrdiv from './qrdiv';
 import { toast } from 'react-toastify';
+
+
 export default memo( function Rooms() {
+
     const dispatch = useDispatch()
     const  rooms  = useSelector(state => state.rooms)
     const [currentPage, setCurrentPage] = useState(1);
@@ -19,7 +23,7 @@ export default memo( function Rooms() {
             console.log(rooms.rooms.length);
             dispatch(fetchRooms(store))  
         }
-        console.log(rooms.rooms.length);
+
     }, [])
     useEffect(()=> {
         const wait = toast.loading("Please wait...")
