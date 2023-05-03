@@ -15,7 +15,8 @@ const fetchRooms = createAsyncThunk(
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
             })
-            return response.data.data
+            let d=[]
+            return response.data.data.reverse()
         } catch (err) {
             console.log(err)
             throw err
@@ -36,7 +37,7 @@ const roomSlice = createSlice(
                 state.rooms = state.rooms.filter(room => room["_id"] != payload.id)
             }
             ,addRoom(state, { payload }) {
-                state.rooms.push(payload)
+                state.rooms.unshift(payload)
             }
         },
         extraReducers: (builder) => {

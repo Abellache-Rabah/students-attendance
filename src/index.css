@@ -4,3 +4,7 @@
 table{
   margin: 0 !important;
 }
+.qr{
+  width: 40% !important;
+  height: 70% !important;
+}

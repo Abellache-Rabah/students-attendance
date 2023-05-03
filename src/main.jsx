@@ -7,10 +7,10 @@ import store from "./redux/store"
 import { BrowserRouter, MemoryRouter } from 'react-router-dom'
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>
-    <BrowserRouter  >
-    <React.StrictMode>
+    <MemoryRouter  initialEntries={["/sign/signin"]}>
+    
       <App />
-    </React.StrictMode>
-    </BrowserRouter>
+    
+    </MemoryRouter>
   </Provider>
 )

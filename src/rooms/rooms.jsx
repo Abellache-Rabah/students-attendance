@@ -8,6 +8,7 @@ import RoomParam from './roomParam';
 import { toast } from 'react-toastify';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Room from './room';
+import { io } from 'socket.io-client';
 export default memo(function Rooms() {
     const dispatch = useDispatch()
     const rooms = useSelector(state => state.rooms)
@@ -25,6 +26,7 @@ export default memo(function Rooms() {
         const wait = toast.loading("Please wait...")
         setLenght(rooms.rooms.length)
     })
+    
     const removeRoom = async (id) => {
         const req = {
             email: store.email,
@@ -39,11 +41,11 @@ export default memo(function Rooms() {
         }).then(res => {
             dispatch(setRooms({ id: id }))
             toast.update(wait, { render: "Room deleted", type: "success", isLoading: false, autoClose: true, delay: 2000 })
-            
+
         }).catch(err => {
             console.log(err);
             toast.update(wait, { render: "Error", type: "error", isLoading: false, autoClose: true, delay: 2000 })
-           
+
         })
     }
     return (
@@ -146,8 +148,8 @@ export default memo(function Rooms() {
 
                         </div></>
                 } />
-                <Route path='seassion/*' element={<Room/>} />
-                <Route path='*' element={<Navigate to={"/"}/>} />
+                <Route path='seassion/*' element={<Room />} />
+                <Route path='*' element={<Navigate to={"/"} />} />
             </Routes>
         </div>
     )
