@@ -495,20 +495,14 @@ export default function Signup(params) {
 
           <div className="relative z-0 mb-3 w-full group">
 
-            <select name="speaciality"   ref={sp} id="speaciality" className='border-none w-full text-center focus:ring-0 bg-transparent py-3 placeholder:text-center placeholder:text-xl'>
+            <select name="speaciality"   ref={sp} id="speaciality" className='block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer'>
             <option selected disabled>specialist</option>
               {spE && spE.map((e, i) => {
                 return (<option key={i} value={e.specialist}>{e.specialist}</option>)
               })}
             </select>
 
-            <label
-              htmlFor="floating_company"
-              className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >
-              specialist
-            </label>
-          </div>
+                    </div>
           <div>
 
             <select ref={company} id="underline_select" className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
