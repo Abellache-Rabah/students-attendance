@@ -5,6 +5,13 @@ table{
   margin: 0 !important;
 }
 .qr{
-  width: 40% !important;
-  height: 70% !important;
+  width: 500px !important;
+  height: 500px !important;
+}
+/*adjust the size of the qr code based on the size of the screen*/
+@media only screen and (max-width: 600px) {
+  .qr{
+    width: 300px !important;
+    height: 300px !important;
+  }
 }

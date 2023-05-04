@@ -1,9 +1,8 @@
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { wait } from "@testing-library/user-event/dist/utils";
 import { setAcount } from "../redux/accountReducer";
 import { useDispatch, useSelector } from "react-redux"
 export default function Signin() {
@@ -18,8 +17,6 @@ export default function Signin() {
   const emailuser = useRef();
   const password = useRef();
   const navigate = useNavigate();
-  const toastId = React.useRef(null);
-
   async function send() {
     const wait = toast.loading("Please wait...")
     let req;

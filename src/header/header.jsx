@@ -23,7 +23,7 @@ export default memo(function Header() {
     return (
         <>
             <div className='flex justify-around py-2 md:hidden'>
-                <img src="./img/logo.svg" alt="" />
+               
                 <div className='flex gap-2'>
                     <Dropdown inline={true} label={<Avatar rounded={true} />} placement='auto'>
                         <Dropdown.Header>

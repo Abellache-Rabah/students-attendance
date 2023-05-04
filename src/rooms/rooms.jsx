@@ -7,27 +7,25 @@ import { fetchRooms, setRooms } from '../redux/roomsReducer';
 import RoomParam from './roomParam';
 import Qrdiv from './qrdiv';
 import { toast } from 'react-toastify';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes,useNavigate} from 'react-router-dom';
 import Room from './room';
 import { io } from 'socket.io-client';
+import RoomPrev from './roomPrev';
 export default memo(function Rooms() {
+    const navigate=useNavigate()
     const dispatch = useDispatch()
     const rooms = useSelector(state => state.rooms)
     const [currentPage, setCurrentPage] = useState(1);
     const store = useSelector(state => state.account)
     const [min, setMin] = useState(0)
     const [max, setMax] = useState(5)
-    const [length, setLenght] = useState(0)
+    const [clear,setClear]=useState(true)
+    const [selectForDelete, setSelectForDelete] = useState([])
     useEffect(() => {
         if (rooms.rooms.length == 0) {
             dispatch(fetchRooms(store))
         }
     }, [])
-    useEffect(() => {
-        const wait = toast.loading("Please wait...")
-        setLenght(rooms.rooms.length)
-    })
-    
     const removeRoom = async (id) => {
         const req = {
             email: store.email,
@@ -40,20 +38,71 @@ export default memo(function Rooms() {
                 "Content-Type": "application/x-www-form-urlencoded"
             }
         }).then(res => {
-            dispatch(setRooms({ id: id }))
-            toast.update(wait, { render: "Room deleted", type: "success", isLoading: false, autoClose: true, delay: 2000 })
-
+            dispatch(setRooms({ id: [id] }))
+   
         }).catch(err => {
             console.log(err);
-            toast.update(wait, { render: "Error", type: "error", isLoading: false, autoClose: true, delay: 2000 })
+        })
+    }
+    const removeRooms = async (e) => {
 
+        e.preventDefault()
+        if (selectForDelete.length > 0) {
+            console.log(selectForDelete.length);
+            const req = {
+                email: store.email,
+                password: store.password,
+                idroom: selectForDelete
+            }
+            await axios.delete("https://simpleapi-p29y.onrender.com/teacher/deletrooms", {
+                data: req,
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).then(async res => {
+                if (res.data.res) {
+                    dispatch(setRooms({ id: selectForDelete }))
+                    setSelectForDelete(()=>[])
+                    setClear(false)
+                    await new Promise((resolve)=>setTimeout(resolve,1))
+                    setClear(true)
+                }
+
+            }).catch(err => {
+                console.log(err);
+            })
+        }
+    }
+    const selectRoom = (e, id) => {
+        console.log(e.target.checked);
+        if (e.target.checked) {
+            setSelectForDelete(prev => {
+                prev.push(id)
+                return prev
+            })
+        } else {
+            setSelectForDelete(prev => prev.filter(element => element != id))
+        }
+    }
+    const fetchSession = async (id) => {
+        await axios.get(`https://simpleapi-p29y.onrender.com/student/session/${id}`, {
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+        }).then(res => {
+            console.log(res.data);
+            if (res.data.res) {
+                navigate("/rooms/prevRoom", { state: res.data, replace: true })
+            } 
+        }).catch(err => {
+            console.log(err);
         })
     }
     return (
         <div className='col-start-2 col-end-6 overflow-y-scroll gap-y-2git remote add origin https://github.com/GHanamaAhmed/students-attendance-web-site.git flex flex-col items-center'>
             <Nav />
             <Routes>
-                <Route path='*' element={
+                <Route path='/*' element={
                     <>
                         <RoomParam />
                         <div className='w-full h-full flex justify-center items-center'>
@@ -64,11 +113,6 @@ export default memo(function Rooms() {
                                             <tr>
                                                 <th scope="col" className="p-4">
                                                     <div className="flex items-center">
-                                                        <input
-                                                            id="checkbox-all-search"
-                                                            type="checkbox"
-                                                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                                                        />
                                                         <label htmlFor="checkbox-all-search" className="sr-only">
                                                             checkbox
                                                         </label>
@@ -92,13 +136,14 @@ export default memo(function Rooms() {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {rooms?.rooms && rooms.rooms.map((room, index) => {
+                                            {clear&&rooms?.rooms && rooms.rooms.map((room, index) => {
                                                 if (index >= min && index < max) {
                                                     return (
-                                                        <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                                        <tr key={index} onDoubleClick={()=>{fetchSession(room["_id"])}} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                                             <td className="w-4 p-4">
                                                                 <div className="flex items-center">
                                                                     <input
+                                                                        onChange={(e) => { selectRoom(e, room["_id"]) }}
                                                                         id="checkbox-table-search-1"
                                                                         type="checkbox"
                                                                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
@@ -134,14 +179,15 @@ export default memo(function Rooms() {
                                             currentPage={currentPage}
                                             layout="table"
                                             onPageChange={(page) => {
-                                                setMin((page - 1) * 5)
-                                                setMax(page * 5)
+                                                setSelectForDelete(()=>[])
+                                                setMin(page-1)
+                                                setMax(page + 5)
                                                 setCurrentPage(page)
                                             }}
                                             showIcons={true}
-                                            totalPages={Math.ceil(length / 5)}
+                                            totalPages={Math.ceil(rooms.rooms.length / 5)}
                                         />
-                                        <button className='text-red-600 py-2 px-4 rounded-lg'>Delete</button>
+                                        <button onClick={removeRooms} className='text-red-600 py-2 px-4 rounded-lg'>Delete</button>
                                     </nav>
 
                                 </div>
@@ -150,6 +196,7 @@ export default memo(function Rooms() {
                         </div></>
                 } />
                 <Route path='seassion/*' element={<Room />} />
+                <Route path='prevRoom/*' element={<RoomPrev />} />
                 <Route path='*' element={<Navigate to={"/"} />} />
             </Routes>
         </div>

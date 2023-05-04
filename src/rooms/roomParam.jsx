@@ -1,6 +1,5 @@
 import React, { useRef } from 'react'
 import axios from 'axios'
-import { data } from 'autoprefixer/lib/autoprefixer';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
@@ -36,7 +35,8 @@ export default function RoomParam() {
         const req = {
             email: account.email,
             password: account.password,
-            qrcode: uuid()
+            qrcode: uuid(),
+            code:Math.floor(1000000 + Math.random() * 9000000)
           }
           if (specialist.current.value != "specialst") {
             req.specialist = specialist.current.value;
@@ -100,8 +100,7 @@ export default function RoomParam() {
                 </div>
             </div>
             <div className='w-full mb-4 md:mb-0 flex flex-col md:flex-row justify-between items-center '>
-                <button onClick={createQrcode} className='bg-orange-400 text-white  px-4 rounded-lg md:rounded-bl-3xl md:rounded-br-none md:rounded-tr-none  py-3  mt-5 w-4/5 md:w-1/2'>Create with qrcode</button>
-                <button className='bg-blue-400 text-white  px-4 rounded-lg  md:rounded-br-3xl md:rounded-bl-none md:rounded-tl-none py-3 mt-5 w-4/5 md:w-1/2'>Create with code</button>
+                <button onClick={createQrcode} className='bg-orange-400 text-white  px-4 rounded-lg mb-2  py-3  mt-5 w-full'>Create with qrcode</button>
             </div>
 
         </div>

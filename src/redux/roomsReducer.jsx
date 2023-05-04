@@ -15,7 +15,7 @@ const fetchRooms = createAsyncThunk(
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
             })
-            let d=[]
+            let d = []
             return response.data.data.reverse()
         } catch (err) {
             console.log(err)
@@ -34,9 +34,11 @@ const roomSlice = createSlice(
         },
         reducers: {
             setRooms(state, { payload }) {
-                state.rooms = state.rooms.filter(room => room["_id"] != payload.id)
+                let f = []
+                f
+                state.rooms = state.rooms.filter(room => !payload.id.includes(room["_id"]))
             }
-            ,addRoom(state, { payload }) {
+            , addRoom(state, { payload }) {
                 state.rooms.unshift(payload)
             }
         },
@@ -53,6 +55,6 @@ const roomSlice = createSlice(
         }
     }
 )
-const { setRooms,addRoom } = roomSlice.actions
-export { fetchRooms, setRooms,addRoom }
+const { setRooms, addRoom } = roomSlice.actions
+export { fetchRooms, setRooms, addRoom }
 export default roomSlice.reducer
