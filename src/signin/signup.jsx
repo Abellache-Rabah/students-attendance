@@ -1,12 +1,13 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useGoogleLogin } from "@react-oauth/google";
-import { getData } from "google-token-decode";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { useDispatch } from "react-redux";
+import {setAcount} from '../redux/accountReducer'
 export default function Signup(params) {
+  const [spE, setSpE] = useState([])
+  const dispatch = useDispatch();
   const [state, setState] = useState({
     validateusername: [
       "border-gray-300 text-gray-900 dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600",
@@ -51,10 +52,12 @@ export default function Signup(params) {
   const company = useRef();
   const navigate = useNavigate();
   async function sendCode() {
+    const wait = toast.loading("Please wait...")
     let res;
+    console.log(sp.current.value);
     let req = { email: email.current.value };
 
-    if(validateEmail(email.current.value)&&validateName(sp.current.value) && validateName(fname.current.value) && validatepassword(p.current.value) && validateName(lname.current.value) ){
+    if (validateEmail(email.current.value) && validateName(sp.current.value) && validateName(fname.current.value) && validatepassword(p.current.value) && validateName(lname.current.value)) {
       res = await axios.post(
         "https://simpleapi-p29y.onrender.com/teacher/auth",
         req,
@@ -64,26 +67,40 @@ export default function Signup(params) {
           },
         }
       );
-      if (res.data.res ){
-      setIshedden((prevValue) => !prevValue)
+      if (res.data.res) {
+        toast.update(wait, { render: "Send code", type: "success", isLoading: false,autoClose:2000})
+        setIshedden((prevValue) => !prevValue)
       } else {
-        toast.error(res.data.mes, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+        toast.update(wait, { render: res.data.msg, type: "error", isLoading: false, data: 2000 })
       }
+    } else {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      toast.update(wait, { render: "chek your information", type: "error", isLoading: false, data: 2000})
 
-
-    }else{
-      toast.error("Check your information", {
-        position: toast.POSITION.TOP_RIGHT,
-      });
     }
-    
-
-    
   }
+  const fetchspecialist = async () => {
+
+    await axios.get("https://simpleapi-p29y.onrender.com/specialist", {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      }
+    }).then(res => {
+      console.log(res.data)
+      setSpE((e) => res.data)
+
+    }).catch(err => {
+      console.log(err);
+    })
+
+  }
+  useEffect(() => {
+    fetchspecialist()
+  }, [])
   async function send() {
+    const wait = toast.loading("Please wait...")
     let res;
+    
     let req = {
       firstname: fname.current.value,
       lastname: lname.current.value,
@@ -105,7 +122,10 @@ export default function Signup(params) {
       );
 
       if (res.data.res) {
-        navigate("/home", { state: req });
+        dispatch(setAcount(res.data.data))
+        toast.update(wait, { render: "Success", type: "success", isLoading: false, autoClose: true });
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+        navigate("/");
       } else {
         toast.error(res.data.mes, {
           position: toast.POSITION.TOP_RIGHT,
@@ -268,49 +288,8 @@ export default function Signup(params) {
       }));
     }
   }
-  const login2 = useGoogleLogin({
-    onSuccess: (tokenResponse) => {
-      console.log(tokenResponse.access_token);
-      getData(tokenResponse.access_token, (err, data) => {
-        // your logic here
-        if (err) {
-          return false;
-        }
-        email.current.value = data.email;
-        fname.current.value = data.given_name;
-        lname.current.value = data.family_name;
-      });
-    },
-  });
-  function login() {
-    let req = {
-      username: username.current.value,
-      email: email.current.value,
-      pwd: p.current.value,
-      rpwd: rp.current.value,
-      fname: fname.current.value,
-      lname: lname.current.value,
-      code: tel.current.value,
-      company: company.current.value,
-    };
-    console.log(req);
-    if (
-      validateusername(req.username) &&
-      validateEmail(req.email) &&
-      validatepassword(req.pwd) &&
-      req.pwd == req.rpwd &&
-      validateName(req.fname) &&
-      validateName(req.lname) &&
-      validateNumbre(req.tel) &&
-      validateName(req.company)
-    ) {
-      send();
-      console.log("ff");
-    } else {
-      login2();
-      console.log("dd");
-    }
-  }
+
+
   function handllastname(e) {
     let value = e.target.value;
     if (validateName(value) || e.target.value == "") {
@@ -354,9 +333,8 @@ export default function Signup(params) {
   return (
     <div className="items-center justify-center flex">
       <div
-        className={`flex justify-center items-center flex-col ${
-          isHidden ? "hidden" : ""
-        }`}
+        className={`flex justify-center items-center flex-col ${isHidden ? "hidden" : ""
+          }`}
       >
         <div className="relative z-0 mb-3 w-full group">
           <input
@@ -414,7 +392,7 @@ export default function Signup(params) {
             Welcome,please entre details.
           </p>
         </div>
-       
+
         <div className="relative z-0 mb-3 w-full group">
           <input
             type="email"
@@ -514,31 +492,24 @@ export default function Signup(params) {
           </div>
         </div>
         <div className="grid md:grid-cols-2 md:gap-6">
-          
+
           <div className="relative z-0 mb-3 w-full group">
-            <input
-              type="text"
-              ref={sp}
-              name="floating_company"
-              id="floating_company"
-              className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-              placeholder=" "
-              required
-            />
-            <label
-              htmlFor="floating_company"
-              className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >
-              specialist
-            </label>
-          </div>
+
+            <select name="speaciality"   ref={sp} id="speaciality" className='block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer'>
+            <option selected disabled>specialist</option>
+              {spE && spE.map((e, i) => {
+                return (<option key={i} value={e.specialist}>{e.specialist}</option>)
+              })}
+            </select>
+
+                    </div>
           <div>
-        
-          <select ref={company} id="underline_select" class="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+
+            <select ref={company} id="underline_select" className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
 
               <option value="Male">Male</option>
-            <option value="Fimale">Fmail</option>
-          </select>
+              <option value="Fimale">Fmail</option>
+            </select>
           </div>
         </div>
         <button
@@ -551,16 +522,7 @@ export default function Signup(params) {
         >
           Sign up
         </button>
-        <button
-          onClick={login}
-          className="w-full border border-slate-300 py-1 rounded-md font-serif flex justify-center items-center dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600"
-        >
-          <img
-            className="h-8 w-8 mr-5"
-            src="https://cdn-icons-png.flaticon.com/512/2702/2702602.png"
-          />
-          Sign up with google
-        </button>
+
         <div className="flex justify-center mt-5">
           <p className="font-serif dark:text-white">you have an account?</p>
           <Link

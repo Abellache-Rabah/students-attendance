@@ -1,26 +1,34 @@
-import {createSlice} from "@reduxjs/toolkit"
-const accountSlice=createSlice(
+import { createSlice } from "@reduxjs/toolkit"
+const accountSlice = createSlice(
     {
-        name:"account",
-        initialState:{
-            email:"ghanamaahmed@gmail.com",
-            password:"12345678",
-            sex:"",
-            speciality:"",
-            firstName:"",
-            lastName:"",
+        name: "account",
+        initialState: {
+            email: "",
+            password: "",
+            sex: "",
+            specialist: "",
+            firstName: "",
+            lastName: "",
         },
-        reducers:{
-            setAcount(state,{payload}){
-                state.email=payload.email
-                state.password=payload.password
-                state.sex=payload.sex
-                state.speciality=payload.speciality
-                state.firstName=payload.firstName
-                state.lastName=payload.lastName
+        reducers: {
+            setAcount(state, { payload }) {
+                state.email = payload.email
+                state.password = payload.password
+                state.sex = payload.sex
+                state.specialist = payload.specialist
+                state.firstName = payload.firstname
+                state.lastName = payload.lastname
+            },
+            logout(state) {
+                state.email = ''
+                state.password = ''
+                state.sex = ''
+                state.specialist = ''
+                state.firstName = ''
+                state.lastName = ''
             }
         }
     }
 )
-export const {setAcount}=accountSlice.actions
+export const { setAcount,logout } = accountSlice.actions
 export default accountSlice.reducer
