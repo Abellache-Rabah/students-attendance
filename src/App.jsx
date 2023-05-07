@@ -28,10 +28,10 @@ function App() {
   return (
     <>
       <Routes>
-        <Route exact path="Student-Attendance/sign/*" element={<Sign />} />
+        <Route exact path="/Student-Attendance/sign/*" element={<Sign />} />
         <Route
           exact
-          path="*"
+          path="/*"
           element={
             <>
               <Header />
@@ -40,16 +40,16 @@ function App() {
                   className={"hidden md:block w-fit col-start-1 h-full col-end-2"}
                 />
                 <Routes>
-                  <Route exact path="Student-Attendance/Dashboard/*" element={<Dashboard />} />
-                  <Route exact path="Student-Attendance/Rooms/*" element={<Rooms />} />
-                  <Route exact path="Student-Attendance/CreateRoom/*" element={<CreateRoom />} />
-                  <Route path="*" element={<Navigate to="Student-Attendance/sign" />} />
+                  <Route exact path="/Student-Attendance/Dashboard/*" element={<Dashboard />} />
+                  <Route exact path="/Student-Attendance/Rooms/*" element={<Rooms />} />
+                  <Route exact path="/Student-Attendance/CreateRoom/*" element={<CreateRoom />} />
+                  <Route path="/*" element={<Navigate to="/Student-Attendance/sign" />} />
                 </Routes>
               </div>
             </>
           }
         />
-        <Route path="*" element={<Navigate to="Student-Attendance/sign" />} />
+        <Route path="/*" element={<Navigate to="/Student-Attendance/sign" />} />
       </Routes>
 
     </>
