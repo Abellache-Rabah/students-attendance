@@ -39,8 +39,8 @@ export default memo( function Sign() {
   return (
     <div className="w-full h-screen grid grid-cols-1 md:grid-cols-2 grid-rows-1 px-0 dark:bg-slate-800">
       <Routes>
-        <Route path="/signin" element={<Signin />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route path="signin" element={<Signin />} />
+        <Route path="signup" element={<Signup />} />
         <Route path="*" element={<Navigate to={"signin"} />} />
       </Routes>
       <div className="bg-gray-100 hidden md:flex justify-center items-center dark:bg-slate-400">
