@@ -10,6 +10,7 @@ export default memo(function Room() {
     const [studentList, setstudentList] = useState([])
     const [showQr, setShowQr] = useState(false)
     const store = useSelector(state => state.account)
+    const [studentListRemove, setstudentListRemove] = useState([])
     const [isVisit, setIsVisit] = useState(false)
     const location = useLocation()
     const fetchSession = async () => {
@@ -55,7 +56,7 @@ export default memo(function Room() {
                     prev.push(res)
                     return prev
                 })
-                
+
             })
         }
 
@@ -65,14 +66,14 @@ export default memo(function Room() {
             email: store.email,
             password: store.password,
             idroom: location.state["_id"]
-          }
+        }
         await axios.post("https://simpleapi-p29y.onrender.com/teacher/stoproom", req, {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             }
         }).then(res => {
 
-           console.log(res.data);
+            console.log(res.data);
         }).catch(err => {
             console.log(err);
         }
@@ -83,14 +84,14 @@ export default memo(function Room() {
             email: store.email,
             password: store.password,
             idroom: location.state["_id"]
-          }
+        }
         await axios.post("https://simpleapi-p29y.onrender.com/teacher/startroom", req, {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             }
         }).then(res => {
 
-           console.log(res.data);
+            console.log(res.data);
         }).catch(err => {
             console.log(err);
         }
@@ -107,11 +108,11 @@ export default memo(function Room() {
     })
     useEffect(() => {
         setstudentList((prev) => prev)
-    },[studentList])
-    const toggler=(e)=>{
+    }, [studentList])
+    const toggler = (e) => {
         if (!e) {
             stopRoom()
-        }else{
+        } else {
             startRoom()
         }
     }
@@ -119,13 +120,13 @@ export default memo(function Room() {
 
 
 
-    const removeStudent =async (idstudent) => {
-
+    const removeStudent = async (idstudent) => {
+        console.log(idstudent);
         const wait = toast.loading("Please wait...")
         const req = {
             email: store.email,
             password: store.password,
-            idroom: id,
+            idroom: location.state["_id"],
             idstudent: idstudent
         }
         await axios.delete("https://simpleapi-p29y.onrender.com/teacher/removeStudent", {
@@ -135,9 +136,12 @@ export default memo(function Room() {
             }
         }).then(res => {
             if (res.data.res) {
+
                 setstudentList((prev) => prev.filter((item) => item["_id"] !== idstudent))
                 toast.update(wait, { render: "Room deleted", type: "success", isLoading: false, autoClose: true, delay: 2000 })
                 console.log("deleted");
+            } else {
+                console.log(res.data.mes);
             }
 
         }).catch(err => {
@@ -147,7 +151,42 @@ export default memo(function Room() {
         })
 
     }
-
+    const removeStudents = async () => {
+        const req = {
+            email: store.email,
+            password: store.password,
+            idroom: location.state["_id"],
+            idstudent: studentListRemove
+        }
+        await axios.delete("https://simpleapi-p29y.onrender.com/teacher/removeStudents", {
+            data: req,
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+        }).then(async res => {
+            if (res.data.res) {
+                setstudentList((prev) => prev.filter(e => !studentListRemove.includes(e["idStudent"])))
+                setClear(false)
+                await new Promise(resolve => setTimeout(resolve, 1))
+                setstudentListRemove([])
+                setClear(true)
+                console.log("deleted");
+            }
+        }).catch(err => {
+            console.log(err)
+        })
+    }
+    const selectStudents = (e, id) => {
+        console.log(e.target.checked);
+        if (e.target.checked) {
+            setstudentListRemove(prev => {
+                prev.push(id)
+                return prev
+            })
+        } else {
+            setstudentListRemove(prev => prev.filter(element => element != id))
+        }
+    }
 
 
     return (
@@ -201,6 +240,7 @@ export default memo(function Room() {
                                 <td className="w-4 p-4 h-fit">
                                     <div className="flex items-center">
                                         <input
+                                        onClick={(e) => { selectStudents(e, room["idStudent"]) }}
                                             id="checkbox-table-search-1"
                                             type="checkbox"
                                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
@@ -219,7 +259,7 @@ export default memo(function Room() {
                                 <td className="px-1 md:px-6 h-fit  py-4">{room.lastname}</td>
                                 <td className="px-1 md:px-6 h-fit  py-4 hidden md:block">{room.sex}</td>
                                 <td className="px-1 md:px-6 h-fit  py-4">{room.specialist}</td>
-                                <td onClick={() => {removeStudent(room["_id"])}} className="px-1 md:px-6 h-fit cursor-pointer py-4 hidden md:block">
+                                <td onClick={() => { removeStudent(room?.idStudent) }} className="px-1 md:px-6 h-fit cursor-pointer py-4 hidden md:block">
                                     Remove
                                 </td>
                             </tr>
@@ -228,10 +268,11 @@ export default memo(function Room() {
 
                 </tbody>
             </table>
-            <div className='w-full'>
-               <span >
-               <ToggleRoom onClick={toggler}/>
-               </span>
+            <div className='w-full flex justify-between'>
+                <span >
+                    <ToggleRoom onClick={toggler} />
+                </span>
+                <button onClick={removeStudents} className='text-red-600 py-2 px-4 rounded-lg'>Delete</button>
             </div>
         </div>
     )

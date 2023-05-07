@@ -3,13 +3,11 @@ import { Table, Checkbox, Pagination } from 'flowbite-react'
 import Nav from '../nav/nav';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchRooms, setRooms } from '../redux/roomsReducer';
+import {  setRooms } from '../redux/roomsReducer';
 import RoomParam from './roomParam';
-import Qrdiv from './qrdiv';
-import { toast } from 'react-toastify';
+
 import { Navigate, Route, Routes,useNavigate} from 'react-router-dom';
 import Room from './room';
-import { io } from 'socket.io-client';
 import RoomPrev from './roomPrev';
 export default memo(function Rooms() {
     const navigate=useNavigate()
@@ -21,11 +19,6 @@ export default memo(function Rooms() {
     const [max, setMax] = useState(5)
     const [clear,setClear]=useState(true)
     const [selectForDelete, setSelectForDelete] = useState([])
-    useEffect(() => {
-        if (rooms.rooms.length == 0) {
-            dispatch(fetchRooms(store))
-        }
-    }, [])
     const removeRoom = async (id) => {
         const req = {
             email: store.email,
