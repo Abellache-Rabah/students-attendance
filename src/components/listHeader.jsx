@@ -24,7 +24,7 @@ export default function ListHeader({ className }) {
                             </div>
                             <li>
                                 <Link
-                                to={"/dashboard"}
+                                to={"/Student-Attendance/Dashboard/"}
                                     className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                                 >
                                      <svg
@@ -43,7 +43,7 @@ export default function ListHeader({ className }) {
                             </li>
                             <li>
                                 <Link
-                                    to={"/rooms"}
+                                    to={"/Student-Attendance/rooms/"}
                                     className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                                 >
                                     <svg
@@ -72,7 +72,7 @@ export default function ListHeader({ className }) {
                             </li>
                             <li onClick={()=>{
                                 dispatch(logout())
-                                navigate("/sign")
+                                navigate("/Student-Attendance/sign/")
                                 }}>
                                 <div
                                     

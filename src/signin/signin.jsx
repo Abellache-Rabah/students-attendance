@@ -39,7 +39,7 @@ export default function Signin() {
         dispatch(setAcount(data.data.data))
         toast.update(wait, { render: "Success", type: "success", isLoading: false, autoClose: true });
         await new Promise((resolve) => setTimeout(resolve, 1000))
-        navigate("/");
+        navigate("/Student-Attendance/Dashboard");
       } else {
 
         toast.update(wait, { render: data.data.mes, type: "error", isLoading: false, delay: 1000, autoClose: true });
