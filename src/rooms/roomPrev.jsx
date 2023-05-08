@@ -3,17 +3,20 @@ import React, { memo, useEffect, useLayoutEffect, useState } from 'react'
 import { useLocation } from "react-router-dom"
 import { toast } from 'react-toastify'
 import { io } from 'socket.io-client';
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
+import { fetchSeassions } from '../redux/seassion';
 import Qrdiv from './qrdiv';
 import ToggleRoom from './toggleRoom';
 export default memo(function RoomPrev() {
+    const dispatch = useDispatch()
     const [studentList, setstudentList] = useState([])
     const [studentListRemove, setstudentListRemove] = useState([])
     const [showQr, setShowQr] = useState(false)
     const store = useSelector(state => state.account)
     const [isVisit, setIsVisit] = useState(false)
     const location = useLocation()
-    const [clear,setClear]=useState(true)
+    const [clear, setClear] = useState(true)
+    const [isStop, setIsStop] = useState(true)
     const fetchSession = async () => {
         await axios.get(`https://simpleapi-p29y.onrender.com/student/session/${location.state.room["_id"]}`, {
             headers: {
@@ -74,8 +77,7 @@ export default memo(function RoomPrev() {
                 "Content-Type": "application/x-www-form-urlencoded"
             }
         }).then(res => {
-
-            console.log(res.data);
+            setIsStop(() => true)
         }).catch(err => {
             console.log(err);
         }
@@ -92,8 +94,7 @@ export default memo(function RoomPrev() {
                 "Content-Type": "application/x-www-form-urlencoded"
             }
         }).then(res => {
-
-            console.log(res.data);
+            setIsStop(() => false)
         }).catch(err => {
             console.log(err);
         }
@@ -102,22 +103,19 @@ export default memo(function RoomPrev() {
     const toggle = () => {
         setShowQr(prev => !prev)
     }
-    useEffect(() => {
-        console.log(location.state);
-    }, []);
-    useEffect(() => {
-        console.log(studentList);
-    })
-    useEffect(() => {
-        setstudentList((prev) => prev)
-    }, [studentList])
     const toggler = (e) => {
-        if (!e) {
+        if (!isStop) {
             stopRoom()
         } else {
             startRoom()
         }
     }
+    useEffect(() => {
+        return () => {
+            dispatch(fetchSeassions(store))
+            stopRoom()
+        }
+    }, [])
     const removeStudent = async (idstudent) => {
         const req = {
             email: store.email,
@@ -172,7 +170,6 @@ export default memo(function RoomPrev() {
         })
     }
     const selectStudents = (e, id) => {
-        console.log(e.target.checked);
         if (e.target.checked) {
             setstudentListRemove(prev => {
                 prev.push(id)
@@ -226,7 +223,7 @@ export default memo(function RoomPrev() {
                     </tr>
                 </thead>
                 <tbody>
-                    {clear&&studentList && studentList.length > 0 && studentList.map((room, index) => {
+                    {clear && studentList && studentList.length > 0 && studentList.map((room, index) => {
                         return (
                             <tr key={index} className="bg-white border-b h-fit  dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                 <td className="w-4 p-4 h-fit">
@@ -261,8 +258,8 @@ export default memo(function RoomPrev() {
                 </tbody>
             </table>
             <div className='w-full flex justify-between'>
-                <span >
-                    <ToggleRoom onClick={toggler} />
+                <span onClick={toggler}  >
+                    <ToggleRoom isStop={isStop} />
                 </span>
                 <button onClick={removeStudents} className='text-red-600 py-2 px-4 rounded-lg'>Delete</button>
             </div>

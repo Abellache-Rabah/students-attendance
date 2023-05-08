@@ -18,13 +18,12 @@ function App() {
   const store = useSelector(state => state.account)
   const seassions = useSelector(state => state.seassions)
   useEffect(() => {
-  
       dispatch(fetchRooms(store))
   }, [account])
   useEffect(() => {
 
       dispatch(fetchSeassions({email:"ghanamaahmed@gmail.com",password:"12345678"}))
-  }, [rooms])
+  },[])
   return (
     <>
       <Routes>

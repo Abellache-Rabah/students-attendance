@@ -85,7 +85,7 @@ export default memo(function Rooms() {
         }).then(res => {
             console.log(res.data);
             if (res.data.res) {
-                navigate("/rooms/prevRoom", { state: res.data, replace: true })
+                navigate("/Student-Attendance/rooms/prevRoom", { state: res.data, replace: true })
             } 
         }).catch(err => {
             console.log(err);
