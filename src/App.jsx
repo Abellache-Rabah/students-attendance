@@ -28,7 +28,6 @@ function App() {
   return (
     <>
       <Routes>
-        <Route exact path="/Student-Attendance/sign/*" element={<Sign />} />
         <Route
           exact
           path="/*"
@@ -49,6 +48,7 @@ function App() {
             </>
           }
         />
+        <Route exact path="/Student-Attendance/sign/*" element={<Sign />} />
         <Route path="/*" element={<Navigate to="/Student-Attendance/sign" />} />
       </Routes>
 
