@@ -4,8 +4,8 @@ import Nav from '../nav/nav';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import {  setRooms } from '../redux/roomsReducer';
+import {fetchSeassions} from '../redux/seassion';
 import RoomParam from './roomParam';
-
 import { Navigate, Route, Routes,useNavigate} from 'react-router-dom';
 import Room from './room';
 import RoomPrev from './roomPrev';
@@ -32,16 +32,14 @@ export default memo(function Rooms() {
             }
         }).then(res => {
             dispatch(setRooms({ id: [id] }))
-   
+            dispatch(fetchSeassions(store))
         }).catch(err => {
             console.log(err);
         })
     }
     const removeRooms = async (e) => {
-
         e.preventDefault()
         if (selectForDelete.length > 0) {
-            console.log(selectForDelete.length);
             const req = {
                 email: store.email,
                 password: store.password,
@@ -56,6 +54,7 @@ export default memo(function Rooms() {
                 if (res.data.res) {
                     dispatch(setRooms({ id: selectForDelete }))
                     setSelectForDelete(()=>[])
+                    dispatch(fetchSeassions(store))
                     setClear(false)
                     await new Promise((resolve)=>setTimeout(resolve,1))
                     setClear(true)
@@ -67,7 +66,6 @@ export default memo(function Rooms() {
         }
     }
     const selectRoom = (e, id) => {
-        console.log(e.target.checked);
         if (e.target.checked) {
             setSelectForDelete(prev => {
                 prev.push(id)
@@ -83,7 +81,6 @@ export default memo(function Rooms() {
                 "Content-Type": "application/x-www-form-urlencoded"
             }
         }).then(res => {
-            console.log(res.data);
             if (res.data.res) {
                 navigate("/Student-Attendance/rooms/prevRoom", { state: res.data, replace: true })
             } 
@@ -136,7 +133,7 @@ export default memo(function Rooms() {
                                                             <td className="w-4 p-4">
                                                                 <div className="flex items-center">
                                                                     <input
-                                                                        onChange={(e) => { selectRoom(e, room["_id"]) }}
+                                                                        onChange={(e) => { selectRoom(e, room?._id) }}
                                                                         id="checkbox-table-search-1"
                                                                         type="checkbox"
                                                                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
@@ -150,12 +147,12 @@ export default memo(function Rooms() {
                                                                 scope="row"
                                                                 className="px-1 md:px-6  py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                                                             >
-                                                                {room.module}
+                                                                {room?.module}
                                                             </th>
                                                             <td className="px-1 md:px-6  py-4">{room?.code ? room.code : "Empty"}</td>
-                                                            <td className="px-1 md:px-6  py-4 hidden md:block">{room.type}</td>
-                                                            <td className="px-1 md:px-6  py-4">{new Date(room.createAt).toLocaleDateString('en-us', { year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric" })}</td>
-                                                            <td className="px-1 md:px-6 cursor-pointer py-4 hidden md:block" onClick={() => removeRoom(room["_id"])}>
+                                                            <td className="px-1 md:px-6  py-4 hidden md:block">{room?.type}</td>
+                                                            <td className="px-1 md:px-6  py-4">{new Date(room?.createAt).toLocaleDateString('en-us', { year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric" })}</td>
+                                                            <td className="px-1 md:px-6 cursor-pointer py-4 hidden md:block" onClick={() => removeRoom(room?._id)}>
                                                                 Remove
                                                             </td>
                                                         </tr>

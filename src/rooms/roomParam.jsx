@@ -55,6 +55,7 @@ export default function RoomParam() {
                 "Content-Type": "application/x-www-form-urlencoded"
             }
         }).then(res => {
+            console.log(res.data);
             dispatch(addRoom(res.data.data))
             navigate("seassion", { state: res.data.data })
         }).catch(err => {
@@ -83,11 +84,11 @@ export default function RoomParam() {
                 <div className='relative w-5/6 rounded-full bg-secondary'>
                     <select name="level" ref={schoolYear} id="level" className='border-none text-center w-full focus:ring-0 bg-transparent py-3 placeholder:text-center placeholder:text-xl'>
                         <option selected disabled>School year</option>
-                        <option value="1 licence">1 licence</option>
-                        <option value="2 licence">2 licence</option>
-                        <option value="3 licence">3 licence</option>
-                        <option value="1 master">1 master</option>
-                        <option value="2 master">2 master</option>
+                        <option value="First licence">First licence</option>
+                        <option value="Seconde licence">Seconde licence</option>
+                        <option value="Third licence">Third licence</option>
+                        <option value="First master">First master</option>
+                        <option value="Seconde master">Seconde master</option>
                     </select>
                 </div>
                 <div className='relative w-5/6 rounded-full bg-secondary'>

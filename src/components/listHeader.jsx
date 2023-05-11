@@ -1,7 +1,7 @@
 import React from 'react'
 import { Sidebar } from 'flowbite-react'
-import {  HiLogout,HiOutlineUser } from 'react-icons/hi'
-import {  AiFillSetting } from 'react-icons/ai'
+import {  HiLogout } from 'react-icons/hi'
+
 import {useNavigate} from "react-router-dom"
 import { Link } from 'react-router-dom'
 import {useDispatch} from "react-redux"
@@ -58,17 +58,27 @@ export default function ListHeader({ className }) {
                                     <span className="flex-1 ml-3 whitespace-nowrap">Rooms</span>
                                 </Link>
                             </li>
-
+                            
                         </ul>
                         <ul className="py-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
-                            <li>
-                                <a
-                                    href="#"
-                                    className="flex items-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group"
+                        <li>
+                                <Link
+                                to={"/Student-Attendance/ourteam/"}
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                                 >
-                                    <AiFillSetting/>
-                                    <span className="ml-4">Settings</span>
-                                </a>
+                                     <svg
+                                        aria-hidden="true"
+                                        className="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
+                                        <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
+                                    </svg> 
+                                   
+                                    <span className="ml-3">Our Team</span>
+                                </Link>
                             </li>
                             <li onClick={()=>{
                                 dispatch(logout())

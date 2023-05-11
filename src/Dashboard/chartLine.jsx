@@ -7,10 +7,12 @@ const MyCharts = () => {
     const rooms = useSelector(state => state.rooms)
     useEffect(() => {
         const data = []
-        seassions.seassions.forEach(seassion => {
-            data.push(seassion.attendence.length)
-        })
-        setStatistic(data)
+        if (seassions.seassions) {
+            seassions.seassions.forEach(seassion => {
+                data.push(seassion.attendence.length)
+            })
+            setStatistic(data)
+        }
     }, [rooms.rooms, seassions.seassions]);
     return (
         <div className='w-5/6'>
@@ -21,18 +23,18 @@ const MyCharts = () => {
                         type: 'category',
                         labels: {
                             formatter: function (val) {
-                                return "Q" 
+                                return "Q"
                             },
                         },
-                        
+
                     },
                     title: {
-                        text: 'Stastistics about the last 10 rooms', 
+                        text: 'Stastistics',
                     },
                 }}
-                series={[{name: 'attendence', data: statistic}]}
+                series={[{ name: 'attendence', data: statistic }]}
                 type="bar"
-               
+
                 height={300}
             />
         </div>

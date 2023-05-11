@@ -42,7 +42,7 @@ export default memo( function Sign() {
         <Route path="*" element={<Navigate to={"signin"} />} />
       </Routes>
       <div className="bg-gray-100 hidden md:flex justify-center items-center dark:bg-slate-400">
-        <img src={"/img/nobgsh.png"}></img>
+        <img src="../img/nobgsh.png" alt="" />
       </div>
       <ToastContainer />
     </div>

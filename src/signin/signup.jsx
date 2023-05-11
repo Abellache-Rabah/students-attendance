@@ -506,9 +506,9 @@ export default function Signup(params) {
           <div>
 
             <select ref={company} id="underline_select" className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-
+            <option selected disabled>Male Or Female</option>
               <option value="Male">Male</option>
-              <option value="Fimale">Fmail</option>
+              <option value="Fimale">Female</option>
             </select>
           </div>
         </div>

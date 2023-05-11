@@ -182,7 +182,9 @@ export default memo(function Room() {
             setstudentListRemove(prev => prev.filter(element => element != id))
         }
     }
-
+useEffect(() => {
+    console.log(location.state);
+}, [])
 
     return (
         <div className='w-full h-full flex items-center flex-col gap-2  px-2'>

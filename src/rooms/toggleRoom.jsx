@@ -1,6 +1,5 @@
 import { useState, memo, useRef, useEffect } from "react"
 export default memo(function ToggleRoom({isStop}) {
-    const check=useRef()
     return (
         <label className="relative inline-flex items-center cursor-pointer">
             <input value={isStop}  type="checkbox" defaultValue="" className="sr-only peer" />

@@ -1,23 +1,182 @@
-import React, { useEffect } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import Nav from '../nav/nav'
 import MyCharts from './chartLine'
-import { Dropdown } from 'flowbite-react'
-import { useSelector } from "react-redux"
-export default function Dashboard() {
+import { Dropdown, Pagination } from 'flowbite-react'
+import { useDispatch, useSelector } from "react-redux"
+import { fetchStudents, emptyStudents } from "../redux/studentReducer"
+import axios from 'axios'
+import { toast } from 'react-toastify'
+export default memo(function Dashboard() {
+  const dispatch = useDispatch()
   const account = useSelector(state => state.account)
   const rooms = useSelector(state => state.rooms)
   const seassions = useSelector(state => state.seassions)
+  const students = useSelector(state => state.students)
   const [models, setModels] = React.useState([])
-
+  const [specialist, setSpecialist] = React.useState([])
+  const [currentModule, setCurrentModule] = useState("All modules")
+  const [currentSortBy, setCurrentSortBy] = useState("All")
+  const [min, setMin] = useState(0)
+  const [max, setMax] = useState(10)
+  const [currentPage, setCurrentPage] = useState(1);
+  const [student, setStudent] = useState([])
+  const [filteredStudent, setFilteredStudent] = useState([])
   useEffect(() => {
-    rooms.rooms.forEach(room => {
-        if(!models.includes(room.module)) {
-          setModels([...models, room.module])
-        }
+    if (rooms.rooms.length <= 0) {
+      setSpecialist([])
+      dispatch(emptyStudents())
+    } else {
+      rooms.rooms.forEach(room => {
+        setModels((prev) => [...prev, room.module])
+        setSpecialist((prev) => [...prev, room.specialist])
+      })
+    }
+    setModels((prev) => removeDuplicate(prev))
+    setSpecialist((prev) => removeDuplicate(prev))
+    dispatch(fetchStudents(specialist))
+  }, [rooms.rooms]);
+  useEffect(() => {
+    dispatch(fetchStudents(specialist))
+  }, [specialist]);
+  useEffect(() => {
+    if (seassions.seassions) {
+      setStudent([])
+      seassions.seassions.map((e) => {
+        e.attendence.map((att) => {
+          let a = {
+            ...att,
+            module: e.room.module
+          }
+          setStudent((prev) => {
+            return [...prev, a]
+          })
+        })
+      })
+    }
+  }, [seassions.seassions]);
+  useEffect(() => {
+    setFilteredStudent(removeDuplicateObject(student))
+    setFilteredStudent((prev) => prev.map((e) => {
+      return { ...e, present: presentInModule(e), absent: absentInModule(e) }
+    }))
+  }, [student]);
+  const handleModule = (value) => {
+    setCurrentModule(() => value)
+  }
+  //remove duplicate
+  const removeDuplicate = (arr) => {
+    let unique_array = []
+    arr.map((e) => {
+      if (unique_array.indexOf(e) === -1) {
+        unique_array.push(e)
+      }
     })
-  },[rooms.rooms, models]);
+    return unique_array
+  }
+  //remove duplicate array of object bt contain key
+  const removeDuplicateObject = (arr) => {
+    const uniqueArray = arr.filter((value, index) => {
+      const _value = JSON.stringify(value);
+      return index === arr.findIndex(obj => {
+        return JSON.stringify(obj) === _value;
+      });
+    });
+    return uniqueArray
+  }
+  const presentInModule = (st) => {
+    let count = 0
+    if (currentModule === "All modules") {
+      student.map((e) => {
+        if (e._id === st._id && e.year == st.year && e.specialist == st.specialist) {
+          count++
+        }
+      })
+    } else {
+      student.map((e) => {
+        if (e.module === currentModule && e._id === st._id && e.year == st.year && e.specialist == st.specialist) {
+          count++
+        }
+      })
+    }
+
+    return count
+  }
+  const absentInModule = (st) => {
+    let countRepeteModule = 0
+    let count = 0
+    let present = 0
+    if (currentModule != "All modules") {
+      rooms.rooms.map((e) => {
+        if (e.module == currentModule && e.schoolYear == st.year && e.specialist == st.specialist) {
+          countRepeteModule++
+        }
+      })
+      present = presentInModule(st)
+    } else {
+      seassions&&seassions.seassions&&seassions.seassions.map((e) => {
+        if (e.room.schoolYear == st.year && e.room.specialist == st.specialist) {
+          countRepeteModule++
+        }
+      })
+      seassions.seassions.map((e) => {
+        e.attendence.map((att) => {
+          if (att._id === st._id && att.year == e.room.schoolYear && att.specialist == e.room.specialist) {
+            present++
+          }
+        })
+      })
+    }
+    count = countRepeteModule - present
+    return count
+  }
   useEffect(() => {
-  }, []);
+    console.log(student);
+  });
+  const sendMessages = async(idStudent,absent) => {
+    if (absent == 0) {
+      return
+    }
+    const req={
+      email:account.email,
+      password:account.password,
+      idStudent:idStudent,
+      absent:absent,
+      module:currentModule
+    }
+    await axios.post("https://simpleapi-p29y.onrender.com/teacher/sendMessage",req,{
+      headers:{
+        "Content-Type":"application/x-www-form-urlencoded"
+      }
+    }).then(res=>{
+        console.log(res.data);
+    }).catch(err=>{
+      console.log(err);
+    })
+  }
+
+
+
+  const sendToAllStudent = async(student , absent) => {
+    if (absent == 0) {
+      return
+    }
+    const req={
+      email:account.email,
+      password:account.password,
+      idStudent:idStudent,
+      absent:absent
+    }
+    await axios.post("https://simpleapi-p29y.onrender.com/teacher/sendMessage",req,{
+      headers:{
+        "Content-Type":"application/x-www-form-urlencoded"
+      }
+    }).then(res=>{
+        console.log(res.data);
+    }).catch(err=>{
+      console.log(err);
+    })
+  
+  }
   return (
     <div className='col-start-2 col-end-5 overflow-y-scroll'>
       <div className='flex justify-center items-center gap-2 w-full flex-col'>
@@ -30,65 +189,63 @@ export default function Dashboard() {
           </div>
           <div className='border-border-color bg-white w-full border-4 flex flex-col gap-y-2 px-10 py-4'>
             <p>Total Rooms </p>
-            <p className='font-semibold'>{rooms.rooms.length}</p>
+            <p className='font-semibold'>{rooms.rooms?.length}</p>
             <p className='opacity-70'>Rooms</p>
           </div>
           <div className='border-border-color bg-white w-full border-4 flex flex-col gap-y-2 px-10 py-4'>
             <p>Total Moudels </p>
-            <p className='font-semibold'>{models.length}</p>
+            <p className='font-semibold'>{models?.length}</p>
             <p className='opacity-70'>Moudels</p>
           </div>
         </div>
         <MyCharts />
-        <div className='w-5/6 bg-white py-2 px-4'>
+        <div className='w-full bg-white py-2 px-4'>
           <div className='w-full flex flex-col md:flex-row md:items-end mb-3 justify-between'>
             <div className='flex items-center flex-col md:flex-row md:w-1/2 gap-5'>
-              <div className='flex flex-col gap-2 w-full'>
+              <div className='flex flex-col gap-2 '>
                 <p>model</p>
                 <div className='bg-secondary rounded-lg py-3 bg-opacity-40 px-5 w-full'>
                   <Dropdown
-                    label="All models"
+                    label={currentModule}
                     inline={true}
                     style={{ backgroundColor: "red" }}
                   >
-                    <Dropdown.Item>
-                      All models
+                    <Dropdown.Item onClick={() => setCurrentModule(() => "All modules")}>
+                      All modules
                     </Dropdown.Item>
+                    {models.map((m, i) => <Dropdown.Item key={i} onClick={() => { handleModule(m) }}>{m}</Dropdown.Item>)}
                   </Dropdown>
                 </div>
               </div>
+              {/* 
               <div className='flex flex-col gap-2 w-full'>
                 <p>sort by</p>
                 <div className='bg-secondary rounded-lg py-3 bg-opacity-40 px-5'>
                   <Dropdown
-                    label="All models"
+                    label={currentSortBy}
                     inline={true}
                   >
-                    <Dropdown.Item>
-                      All models
+                    <Dropdown.Item onClick={() => setCurrentSortBy(() => "All")}>
+                      All
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => setCurrentSortBy(() => "PRESNTATION")}>
+                      PRESNTATION
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => setCurrentSortBy(() => "ABSENCE")}>
+                      ABSENCE
                     </Dropdown.Item>
                   </Dropdown>
                 </div>
               </div>
+  */}
             </div>
-            <button className='bg-secondary rounded-lg py-3 bg-opacity-40 active:bg-opacity-100 px-5'>Apply Filter</button>
+            {/* <button className='bg-secondary rounded-lg py-3 bg-opacity-40 active:bg-opacity-100 px-5'>Apply Filter</button> */}
           </div>
           <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
-                  <th scope="col" className="p-4">
-                    <div className="flex items-center">
-                      <input
-                        id="checkbox-all-search"
-                        type="checkbox"
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                      />
-                      <label htmlFor="checkbox-all-search" className="sr-only">
-                        checkbox
-                      </label>
-                    </div>
-                  </th>
+
                   <th scope="col" className="px-6 py-3">
                     Name
                   </th>
@@ -104,53 +261,74 @@ export default function Dashboard() {
                   <th scope="col" className="px-6 py-3">
                     Absence
                   </th>
+                  <th scope="col" className="px-6 py-3">
+                    Send warring
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                  <td className="w-4 p-4">
-                    <div className="flex items-center">
-                      <input
-                        id="checkbox-table-search-1"
-                        type="checkbox"
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                      />
-                      <label htmlFor="checkbox-table-search-1" className="sr-only">
-                        checkbox
-                      </label>
-                    </div>
-                  </td>
-                  <th
-                    scope="row"
-                    className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
-                  >
-                    <div className="pl-3">
-                      <div className="text-base font-semibold">Neil Sims</div>
-                    </div>
-                  </th>
-                  <td className="px-6 py-4">agarqbellqche@gmail.com</td>
-                  <tr>
-                    <div className="pl-3">
-                      <div className="text-base font-semibold">Math</div>
-                    </div>
-                  </tr>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center">
-                      <div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2" />{" "}
-                      8
-                    </div>
-                  </td>
+                {
+                  students && students.students && students.students.map((e, i) => {
+                    if (i >= min && i < max) {
+                      return (
+                        <tr key={i} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
 
-                  <td className="px-6 py-4">
-                    <div className="flex items-center">
-                      <div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2" />{" "}
-                      8
-                    </div>
-                  </td>
-                </tr>
+                          <th
+                            scope="row"
+                            className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
+                          >
+                            <div className="pl-3">
+                              <div className="text-base font-semibold">{e.lastname} {e.firstname}</div>
+                            </div>
+                          </th>
+                          <td className="px-6 py-4">{e.email}</td>
+                          <tr>
+                            <div className="pl-3">
+                              <div className="text-base font-semibold">{e.specialist}</div>
+                            </div>
+                          </tr>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center">
+                              <div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2" />{" "}
+                              {presentInModule(e)}
+                            </div>
+                          </td>
+
+                          <td className="px-6 py-4">
+                            <div className="flex items-center">
+                              <div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2" />{" "}
+                              {absentInModule(e)}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center">
+                              <button className='px-5 py-2' onClick={()=> sendMessages(e._id,absentInModule(e)) }>Send</button>
+                            </div>
+                          </td>
+                        </tr>
+                      )
+                    }
+                  })
+                }
 
               </tbody>
             </table>
+            <nav
+              className="flex items-center justify-between p-4"
+              aria-label="Table navigation"
+            >
+              <Pagination
+                currentPage={currentPage}
+                layout="table"
+                onPageChange={(page) => {
+                  setMin(page - 1)
+                  setMax(page + 5)
+                  setCurrentPage(page)
+                }}
+                showIcons={true}
+                totalPages={Math.ceil(students.students?students.students.length/5:1)}
+              />
+            </nav>
           </div>
 
         </div>
@@ -158,3 +336,4 @@ export default function Dashboard() {
     </div>
   )
 }
+)

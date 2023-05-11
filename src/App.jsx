@@ -10,6 +10,8 @@ import Sign from "./signin/sign";
 import { fetchRooms, setRooms } from './redux/roomsReducer';
 import { useDispatch, useSelector } from "react-redux";
 import { fetchSeassions } from './redux/seassion';
+import { fetchStudents, emptyStudents } from './redux/studentReducer';
+import OurTeam from "./OurTeam/ourTeam";
 function App() {
   const account = useSelector(state => state.account)
   const navigate = useNavigate()
@@ -17,13 +19,13 @@ function App() {
   const rooms = useSelector(state => state.rooms)
   const store = useSelector(state => state.account)
   const seassions = useSelector(state => state.seassions)
+  const students = useSelector(state => state.students)
   useEffect(() => {
-      dispatch(fetchRooms(store))
+    dispatch(fetchRooms(store))
   }, [account])
   useEffect(() => {
-
-      dispatch(fetchSeassions({email:"ghanamaahmed@gmail.com",password:"12345678"}))
-  },[])
+    dispatch(fetchSeassions(store))
+  }, [account])
   return (
     <>
       <Routes>
@@ -41,6 +43,7 @@ function App() {
                   <Route exact path="/Student-Attendance/Dashboard/*" element={<Dashboard />} />
                   <Route exact path="/Student-Attendance/Rooms/*" element={<Rooms />} />
                   <Route exact path="/Student-Attendance/CreateRoom/*" element={<CreateRoom />} />
+                  <Route exact path="/Student-Attendance/ourteam/*" element={<OurTeam />} />
                   <Route path="/*" element={<Navigate to="/Student-Attendance/sign" />} />
                 </Routes>
               </div>
