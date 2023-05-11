@@ -113,7 +113,7 @@ export default memo(function Dashboard() {
       })
       present = presentInModule(st)
     } else {
-      seassions&&seassions.seassions&&seassions.seassions.map((e) => {
+      seassions && seassions.seassions && seassions.seassions.map((e) => {
         if (e.room.schoolYear == st.year && e.room.specialist == st.specialist) {
           countRepeteModule++
         }
@@ -132,50 +132,55 @@ export default memo(function Dashboard() {
   useEffect(() => {
     console.log(student);
   });
-  const sendMessages = async(idStudent,absent) => {
+  const sendMessages = async (idStudent, absent) => {
     if (absent == 0) {
       return
     }
-    const req={
-      email:account.email,
-      password:account.password,
-      idStudent:idStudent,
-      absent:absent,
-      module:currentModule
+    const req = {
+      email: account.email,
+      password: account.password,
+      idStudent: idStudent,
+      absent: absent,
+      module: currentModule
     }
-    await axios.post("https://simpleapi-p29y.onrender.com/teacher/sendMessage",req,{
-      headers:{
-        "Content-Type":"application/x-www-form-urlencoded"
+    await axios.post("https://simpleapi-p29y.onrender.com/teacher/sendMessage", req, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
       }
-    }).then(res=>{
-        console.log(res.data);
-    }).catch(err=>{
+    }).then(res => {
+      console.log(res.data);
+    }).catch(err => {
       console.log(err);
     })
   }
 
 
 
-  const sendToAllStudent = async(student , absent) => {
-    if (absent == 0) {
-      return
-    }
-    const req={
-      email:account.email,
-      password:account.password,
-      idStudent:idStudent,
-      absent:absent
-    }
-    await axios.post("https://simpleapi-p29y.onrender.com/teacher/sendMessage",req,{
-      headers:{
-        "Content-Type":"application/x-www-form-urlencoded"
+  const sendToAllStudent = async () => {
+    let st = students.students.map(e => {
+      if (absentInModule(e)) {
+        return {
+          id: e._id,
+          absent: absentInModule(e)
+        }
       }
-    }).then(res=>{
-        console.log(res.data);
-    }).catch(err=>{
+    })
+    const req = {
+      email: account.email,
+      password: account.password,
+      student: st,
+      module: currentModule
+    }
+    await axios.post("https://simpleapi-p29y.onrender.com/teacher/sendtoallstudents", req, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      }
+    }).then(res => {
+      console.log(res);
+    }).catch(err => {
       console.log(err);
     })
-  
+
   }
   return (
     <div className='col-start-2 col-end-5 overflow-y-scroll'>
@@ -239,7 +244,7 @@ export default memo(function Dashboard() {
               </div>
   */}
             </div>
-            {/* <button className='bg-secondary rounded-lg py-3 bg-opacity-40 active:bg-opacity-100 px-5'>Apply Filter</button> */}
+            <button onClick={sendToAllStudent} className='bg-secondary  rounded-lg py-3 bg-opacity-40 active:  px-5'>Send to all students</button>
           </div>
           <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -302,7 +307,7 @@ export default memo(function Dashboard() {
                           </td>
                           <td className="px-6 py-4">
                             <div className="flex items-center">
-                              <button className='px-5 py-2' onClick={()=> sendMessages(e._id,absentInModule(e)) }>Send</button>
+                            {absentInModule(e)?<button className='rounded text-white bg-blue-500 hover:bg-red-600 px-5 py-2' onClick={() => sendMessages(e._id, absentInModule(e))}>Send</button>:<button className='px-5 py-2 cursor-default'>Send</button>}
                             </div>
                           </td>
                         </tr>
@@ -313,6 +318,7 @@ export default memo(function Dashboard() {
 
               </tbody>
             </table>
+           
             <nav
               className="flex items-center justify-between p-4"
               aria-label="Table navigation"
@@ -326,7 +332,7 @@ export default memo(function Dashboard() {
                   setCurrentPage(page)
                 }}
                 showIcons={true}
-                totalPages={Math.ceil(students.students?students.students.length/5:1)}
+                totalPages={Math.ceil(students.students ? students.students.length / 5 : 1)}
               />
             </nav>
           </div>
