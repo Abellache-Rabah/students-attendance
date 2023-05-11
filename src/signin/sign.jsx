@@ -6,6 +6,7 @@ import Signin from "./signin";
 import Signup from "./signup";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import Forget from "./forget";
 export default memo( function Sign() {
   const account = useSelector((state) => state.account);
   const navigate = useNavigate();
@@ -39,7 +40,8 @@ export default memo( function Sign() {
       <Routes>
         <Route path="signin" element={<Signin />} />
         <Route path="signup" element={<Signup />} />
-        <Route path="*" element={<Navigate to={"signin"} />} />
+        <Route path="forget/*" element={<Forget/>} />
+        <Route path="/*" element={<Navigate to={"signin"} />} />
       </Routes>
       <div className="bg-gray-100 hidden md:flex justify-center items-center dark:bg-slate-400">
         <img src="../img/nobgsh.png" alt="" />

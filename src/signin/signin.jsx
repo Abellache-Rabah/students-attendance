@@ -124,9 +124,9 @@ export default function Signin() {
           </label>
         </div>
         <div className="mt-3">
-          <a className="text-purple-900 font-serif" href="#">
+          <Link to={"../forget"} className="text-purple-900 font-serif" href="#">
             Forget password
-          </a>
+          </Link>
         </div>
         <button
           onClick={() => {

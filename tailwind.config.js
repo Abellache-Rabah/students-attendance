@@ -11,6 +11,9 @@ export default {
         "primary": "#F7F7F7",
         "secondary": "#EDEDED",
         "border-color": "#ECEEF6",
+        "text-color": "#A0A3BD",
+        "xr8": "#023E8A",
+        "xr12": "#018DD7",
       }
     },
   },

@@ -244,7 +244,7 @@ export default memo(function Dashboard() {
               </div>
   */}
             </div>
-            <button onClick={sendToAllStudent} className='bg-secondary  rounded-lg py-3 bg-opacity-40 active:  px-5'>Send to all students</button>
+            <button onClick={sendToAllStudent} className='bg-secondary  rounded-lg py-3 bg-opacity-40 hover:bg-indigo-400 hover:bg-opacity-50  px-5'>Send to all students</button>
           </div>
           <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
