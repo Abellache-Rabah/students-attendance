@@ -24,7 +24,6 @@ export default function RoomParam() {
             }
         }).then(res => {
             setSp((e) => res.data)
-
         }).catch(err => {
             console.log(err);
         })
@@ -55,7 +54,6 @@ export default function RoomParam() {
                 "Content-Type": "application/x-www-form-urlencoded"
             }
         }).then(res => {
-            console.log(res.data);
             dispatch(addRoom(res.data.data))
             navigate("seassion", { state: res.data.data })
         }).catch(err => {
@@ -74,16 +72,16 @@ export default function RoomParam() {
                     <input type="text" ref={moudle} className='border-none text-center focus:ring-0 bg-transparent py-3 placeholder:text-center placeholder:text-xl' placeholder='Moudile' />
                 </div>
                 <div className='rounded-full w-5/6 bg-secondary'>
-                    <select name="speaciality" ref={specialist} id="speaciality" className='border-none text-center focus:ring-0 bg-transparent py-3 placeholder:text-center placeholder:text-xl'>
-                        <option selected disabled>specialst</option>
+                    <select name="speaciality" defaultValue={""} ref={specialist} id="speaciality" className='border-none text-center focus:ring-0 bg-transparent py-3 placeholder:text-center placeholder:text-xl'>
+                        <option value={""} disabled>specialst</option>
                         {sp && sp.map((e, i) => {
                             return (<option key={i} value={e.specialist}>{e.specialist}</option>)
                         })}
                     </select>
                 </div>
                 <div className='relative w-5/6 rounded-full bg-secondary'>
-                    <select name="level" ref={schoolYear} id="level" className='border-none text-center w-full focus:ring-0 bg-transparent py-3 placeholder:text-center placeholder:text-xl'>
-                        <option selected disabled>School year</option>
+                    <select name="level" ref={schoolYear} defaultValue={""} id="level" className='border-none text-center w-full focus:ring-0 bg-transparent py-3 placeholder:text-center placeholder:text-xl'>
+                        <option value={""} disabled>School year</option>
                         <option value="First licence">First licence</option>
                         <option value="Seconde licence">Seconde licence</option>
                         <option value="Third licence">Third licence</option>
@@ -92,8 +90,8 @@ export default function RoomParam() {
                     </select>
                 </div>
                 <div className='relative w-5/6 rounded-full bg-secondary'>
-                    <select name="level" ref={type} id="level" className='border-none text-center w-full focus:ring-0 bg-transparent py-3 placeholder:text-center placeholder:text-xl'>
-                        <option selected disabled>Type</option>
+                    <select name="level" defaultValue={""} ref={type} id="level" className='border-none text-center w-full focus:ring-0 bg-transparent py-3 placeholder:text-center placeholder:text-xl'>
+                        <option value={""} disabled>Type</option>
                         <option value="Cour">Cour</option>
                         <option value="Td">Td</option>
                         <option value="Tp">TP</option>

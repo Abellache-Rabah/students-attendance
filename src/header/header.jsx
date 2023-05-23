@@ -13,10 +13,7 @@ export default memo(function Header() {
     const toggleMenu = () => {
         setShowMenu(prev => !prev)
     }
-    useEffect(() => {
-        console.log(acount);
-    }, []);
-    const logout = () => {
+    const logout1 = () => {
         dispatch(logout())
         navigate("../sign")
     }
@@ -34,7 +31,7 @@ export default memo(function Header() {
                                 {acount.email}
                             </span>
                         </Dropdown.Header>
-                        <Dropdown.Item onClick={logout}>
+                        <Dropdown.Item onClick={logout1}>
                             Logout
                             { }
                         </Dropdown.Item>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import Navbar from "./navbar/navbar";
 import Header from "./header/header";
 import ListHeader from "./components/listHeader";
@@ -12,6 +12,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchSeassions } from './redux/seassion';
 import { fetchStudents, emptyStudents } from './redux/studentReducer';
 import OurTeam from "./OurTeam/ourTeam";
+import { setAcount } from "./redux/accountReducer";
+import axios from "axios";
 function App() {
   const account = useSelector(state => state.account)
   const navigate = useNavigate()
@@ -26,6 +28,41 @@ function App() {
   useEffect(() => {
     dispatch(fetchSeassions(store))
   }, [account])
+  useLayoutEffect(() => {
+    let email = localStorage.getItem("email")
+    let password = localStorage.getItem("password")
+    if (email && password) {
+      send(email, password)
+    } else {
+      navigate("/Student-Attendance/sign/signin");
+    }
+  }, [account])
+  async function send(email, password) {
+    let req = {
+      email: email,
+      password: password,
+    };
+    try {
+      await axios.post(
+        "https://simpleapi-p29y.onrender.com/teacher/signin",
+        req,
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        }
+      ).then(async data => {
+        if (data.data.res) {
+          dispatch(setAcount(data.data.data))
+          navigate("/Student-Attendance/Dashboard");
+        } else {
+          navigate("/Student-Attendance/sign/signin");
+        }
+      }).catch(err => { navigate("/Student-Attendance/sign/signin"); });
+    } catch (e) {
+      navigate("/Student-Attendance/sign/signin");
+    }
+  }
   return (
     <>
       <Routes>
@@ -35,7 +72,7 @@ function App() {
           element={
             <>
               <Header />
-              <div className="md:grid md:grid-cols-4 h-full md:grid-rows-1 md:h-full">
+              <div className="md:grid md:grid-cols-4 md:grid-rows-1 overflow-y-auto h-full">
                 <ListHeader
                   className={"hidden md:block w-fit col-start-1 h-full col-end-2"}
                 />

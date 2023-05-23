@@ -2,11 +2,18 @@ import React, { memo, useRef, useState } from 'react'
 import { Dropdown, Avatar } from 'flowbite-react'
 import {setAcount} from "../redux/accountReducer"
 import { useDispatch,useSelector } from 'react-redux'
+import {logout} from "../redux/accountReducer"
+import {useNavigate} from "react-router-dom"
 export default memo( function Nav() {
     const [typeShearch, setTypeShearch] = useState('Module')
     const shearch=useRef()
     const dispath=useDispatch()
     const account=useSelector(state=>state.account)
+    const navigate=useNavigate()
+    const logout1=()=>{
+        dispath(logout())
+        navigate("../sign/signin")
+    }
     return (
         <div className='flex justify-around items-center py-2 w-full md:bg-secondary'>
             <div className='flex gap-2'>
@@ -31,13 +38,13 @@ export default memo( function Nav() {
                 <Dropdown inline={true} label={<Avatar rounded={true} />} placement='auto'>
                     <Dropdown.Header>
                         <span className="block text-sm">
-                            Bonnie Green
+                            {account.lastName} {account.firstName}
                         </span>
                         <span className="block truncate text-sm font-medium">
-                            bonnie@flowbite.com
+                           {account.email}
                         </span>
                     </Dropdown.Header>
-                    <Dropdown.Item>
+                    <Dropdown.Item onClick={logout1}>
                         Logout
                     </Dropdown.Item>
                 </Dropdown>

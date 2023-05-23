@@ -9,7 +9,7 @@ import RoomParam from './roomParam';
 import { Navigate, Route, Routes,useNavigate} from 'react-router-dom';
 import Room from './room';
 import RoomPrev from './roomPrev';
-export default memo(function Rooms() {
+export default function Rooms() {
     const navigate=useNavigate()
     const dispatch = useDispatch()
     const rooms = useSelector(state => state.rooms)
@@ -89,16 +89,16 @@ export default memo(function Rooms() {
         })
     }
     return (
-        <div className='col-start-2 col-end-6 overflow-y-scroll gap-y-2git remote add origin https://github.com/GHanamaAhmed/students-attendance-web-site.git flex flex-col items-center'>
+        <div className='col-start-2 col-end-6 gap-y-2 overflow-y-auto pb-10 flex flex-col items-center'>
             <Nav />
             <Routes>
                 <Route path='/*' element={
                     <>
                         <RoomParam />
                         <div className='w-full h-full flex justify-center items-center'>
-                            <div className='w-full flex items-center flex-col ' >
-                                <div className="w-11/12  bg-transparent shadow-none relative overflow-x-auto   sm:rounded-lg">
-                                    <table className="w-full h-full rounded-3xl shadow-sm overflow-hidden text-sm text-left text-gray-500 dark:text-gray-400">
+                            <div className='w-full flex items-center flex-col' >
+                                {!rooms.isloading&&<div className="w-11/12  bg-transparent shadow-none relative overflow-x-auto   sm:rounded-lg">
+                                    <table className="w-full h-full rounded-3xl shadow-sm text-sm text-left text-gray-500 dark:text-gray-400">
                                         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                             <tr>
                                                 <th scope="col" className="p-4">
@@ -175,12 +175,12 @@ export default memo(function Rooms() {
                                                 setCurrentPage(page)
                                             }}
                                             showIcons={true}
-                                            totalPages={Math.ceil(rooms.rooms.length / 5)}
+                                            totalPages={rooms?.rooms?Math.ceil(rooms.rooms.length / 5):1}
                                         />
                                         <button onClick={removeRooms} className='text-red-600 py-2 px-4 rounded-lg'>Delete</button>
                                     </nav>
 
-                                </div>
+                                </div>}
                             </div>
 
                         </div></>
@@ -192,4 +192,3 @@ export default memo(function Rooms() {
         </div>
     )
 }
-)

@@ -1,6 +1,8 @@
 import React from 'react'
 import { Avatar, Dropdown } from 'flowbite-react'
+import {useSelector} from "react-redux"
 export default function Navbar() {
+    const account =useSelector((state)=>state.account)
     return (
         <div className='flex justify-around py-2 w-full'>
             
@@ -8,7 +10,7 @@ export default function Navbar() {
             <Dropdown inline={true} label={<Avatar img={""} rounded={true}/>} placement='auto'>
                 <Dropdown.Header>
                     <span className="block text-sm">
-                        Bonnie Green
+                        {account.lastName} {account.firstName}
                     </span>
                     <span className="block truncate text-sm font-medium">
                         bonnie@flowbite.com

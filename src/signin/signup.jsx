@@ -54,7 +54,6 @@ export default function Signup(params) {
   async function sendCode() {
     const wait = toast.loading("Please wait...")
     let res;
-    console.log(sp.current.value);
     let req = { email: email.current.value };
 
     if (validateEmail(email.current.value) && validateName(sp.current.value) && validateName(fname.current.value) && validatepassword(p.current.value) && validateName(lname.current.value)) {
@@ -71,11 +70,11 @@ export default function Signup(params) {
         toast.update(wait, { render: "Send code", type: "success", isLoading: false,autoClose:2000})
         setIshedden((prevValue) => !prevValue)
       } else {
-        toast.update(wait, { render: res.data.msg, type: "error", isLoading: false, data: 2000 })
+        toast.update(wait, { render: res.data.msg, type: "error", isLoading: false, data: 2000 ,autoClose:2000})
       }
     } else {
       await new Promise((resolve) => setTimeout(resolve, 1000))
-      toast.update(wait, { render: "chek your information", type: "error", isLoading: false, data: 2000})
+      toast.update(wait, { render: "chek your information", type: "error", isLoading: false, data: 2000,autoClose:2000})
 
     }
   }
@@ -86,9 +85,7 @@ export default function Signup(params) {
         "Content-Type": "application/x-www-form-urlencoded"
       }
     }).then(res => {
-      console.log(res.data)
       setSpE((e) => res.data)
-
     }).catch(err => {
       console.log(err);
     })
@@ -120,7 +117,6 @@ export default function Signup(params) {
           },
         }
       );
-
       if (res.data.res) {
         dispatch(setAcount(res.data.data))
         toast.update(wait, { render: "Success", type: "success", isLoading: false, autoClose: true });
@@ -389,7 +385,7 @@ export default function Signup(params) {
             Welcome to the page
           </p>
           <p className="text-zinc-500 mt-3 font-serif dark:text-slate-400">
-            Welcome,please entre details.
+            Welcome,please enter details.
           </p>
         </div>
 
@@ -495,8 +491,8 @@ export default function Signup(params) {
 
           <div className="relative z-0 mb-3 w-full group">
 
-            <select name="speaciality"   ref={sp} id="speaciality" className='block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer'>
-            <option selected disabled>specialist</option>
+            <select name="speaciality" defaultValue={""} ref={sp} id="speaciality" className='block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer'>
+            <option value={""} disabled>specialist</option>
               {spE && spE.map((e, i) => {
                 return (<option key={i} value={e.specialist}>{e.specialist}</option>)
               })}
@@ -505,8 +501,8 @@ export default function Signup(params) {
                     </div>
           <div>
 
-            <select ref={company} id="underline_select" className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-            <option selected disabled>Male Or Female</option>
+            <select ref={company} id="underline_select" defaultValue={""} className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+            <option value={""} disabled>Male Or Female</option>
               <option value="Male">Male</option>
               <option value="Fimale">Female</option>
             </select>
@@ -529,7 +525,7 @@ export default function Signup(params) {
             to={"../signin"}
             className="pl-1 text-purple-900 font-serif dark:text-purple-500"
           >
-            sing in
+            sign in
           </Link>
         </div>
       </div>

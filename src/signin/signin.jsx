@@ -37,8 +37,10 @@ export default function Signin() {
       );
       if (data.data.res) {
         dispatch(setAcount(data.data.data))
-        toast.update(wait, { render: "Success", type: "success", isLoading: false, autoClose: true });
-        await new Promise((resolve) => setTimeout(resolve, 1000))
+        toast.update(wait, { render: "Success", type: "success", isLoading: false, autoClose: 1500 });
+        await new Promise((resolve) => setTimeout(resolve, 1500))
+        localStorage.setItem("email",req.email)
+        localStorage.setItem("password",req.password)
         navigate("/Student-Attendance/Dashboard");
       } else {
 
@@ -136,22 +138,13 @@ export default function Signin() {
         >
           Sign in
         </button>
-
-        {/* <GoogleLogin
-          onSuccess={credentialResponse => {
-            console.log(credentialResponse);
-          }}
-          onError={() => {
-            console.log('Login Failed');
-          }}
-        /> */}
         <div className="flex justify-center mt-5">
           <p className="font-serif dark:text-white">if dont have an account?</p>
           <Link
             to={"../signup"}
             className="pl-1 text-purple-900 font-serif dark:text-purple-500"
           >
-            sing up
+            sign up
           </Link>
         </div>
       </div>

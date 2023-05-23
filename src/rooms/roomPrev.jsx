@@ -1,12 +1,12 @@
 import axios from 'axios'
-import React, { memo, useEffect, useLayoutEffect, useState } from 'react'
+import React, { memo, useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import { useLocation } from "react-router-dom"
-import { toast } from 'react-toastify'
 import { io } from 'socket.io-client';
-import { useSelector,useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { fetchSeassions } from '../redux/seassion';
 import Qrdiv from './qrdiv';
 import ToggleRoom from './toggleRoom';
+import { Printer } from './printer';
 export default memo(function RoomPrev() {
     const dispatch = useDispatch()
     const [studentList, setstudentList] = useState([])
@@ -23,11 +23,10 @@ export default memo(function RoomPrev() {
                 "Content-Type": "application/x-www-form-urlencoded"
             }
         }).then(res => {
-            console.log(res.data);
             if (res.data.res) {
                 setstudentList(() => res.data.data)
             } else {
-                toast.error(res.data.mes, { closeButton: true })
+                console.log(res.data?.mes);
             }
         }).catch(err => {
             console.log(err);
@@ -48,9 +47,6 @@ export default memo(function RoomPrev() {
                 }
             });
             socket.connect()
-            socket.on("connect", () => {
-                console.log("connect");
-            })
             socket.emit("join-room", {
                 idRoom: location.state.room["_id"],
                 email: store.email
@@ -58,7 +54,6 @@ export default memo(function RoomPrev() {
             socket.on("join", (res) => {
                 setstudentList((prev) => {
                     prev.push(res)
-                    console.log(res);
                     return prev
                 })
 
@@ -100,9 +95,9 @@ export default memo(function RoomPrev() {
         }
         )
     }
-    const toggle = () => {
+    const toggle = useCallback(() => {
         setShowQr(prev => !prev)
-    }
+    }, [setShowQr])
     const toggler = (e) => {
         if (!isStop) {
             stopRoom()
@@ -131,18 +126,12 @@ export default memo(function RoomPrev() {
         }).then(async res => {
             if (res.data.res) {
                 setstudentList((prev) => prev.filter((item) => item.idStudent != idstudent))
-                console.log(studentList);
-
             }
-
         }).catch(err => {
             console.log(err);
-            toast.update(wait, { render: "Error", type: "error", isLoading: false, autoClose: true, delay: 2000 })
-
         })
     }
     const removeStudents = async () => {
-        const wait = toast.loading("Please wait...")
         const req = {
             email: store.email,
             password: store.password,
@@ -161,12 +150,9 @@ export default memo(function RoomPrev() {
                 await new Promise(resolve => setTimeout(resolve, 1))
                 setstudentListRemove([])
                 setClear(true)
-                console.log("deleted");
             }
         }).catch(err => {
             console.log(err);
-            toast.update(wait, { render: "Error", type: "error", isLoading: false, autoClose: true, delay: 2000 })
-
         })
     }
     const selectStudents = (e, id) => {
@@ -190,7 +176,7 @@ export default memo(function RoomPrev() {
                 <p className='py-2 px-4 rounded-lg w-full text-center bg-green-300'>Specialist : {location.state.room.specialist} </p>
                 <p className='py-2 px-4 rounded-lg w-full text-center bg-green-300'>Level : {location.state.room.schoolYear} </p>
             </div>
-            <table className="w-full rounded-3xl shadow-sm overflow-hidden text-sm text-left text-gray-500 dark:text-gray-400">
+            <table id='wow' className="w-full rounded-3xl shadow-sm overflow-hidden text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr className='h-fit'>
                         <th scope="col" className="p-4">
@@ -261,7 +247,11 @@ export default memo(function RoomPrev() {
                 <span onClick={toggler}  >
                     <ToggleRoom isStop={isStop} />
                 </span>
-                <button onClick={removeStudents} className='text-red-600 py-2 px-4 rounded-lg'>Delete</button>
+                <div className='flex gap-2'>
+                    <Printer apiData={studentList.map(e => ({ first_name: e.firstname, last_name: e.lastname, email: e.email, specialist: e.specialist, sex: e.sex }))} fileName={new Date(Date.now())} />
+                    <button onClick={removeStudents} className='text-red-600 py-2 px-4 rounded-lg'>Delete</button>
+
+                </div>
             </div>
         </div>
     )

@@ -23,7 +23,7 @@ const MyCharts = () => {
                         type: 'category',
                         labels: {
                             formatter: function (val) {
-                                return "Q"
+                                return val
                             },
                         },
 

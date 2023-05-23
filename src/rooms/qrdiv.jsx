@@ -1,7 +1,7 @@
-import React from "react";
+import React, { memo } from "react";
 import QRCode from "qrcode";
 import { useEffect, useRef, useState } from "react";
-export default function Qrdiv({ qrCode,code,onTogle }) {
+export default memo( function Qrdiv({ qrCode,code,onTogle }) {
 	const [showCode,setShowCode]=useState(false)
 	const canvasRef = useRef();
 	useEffect(() => {
@@ -21,4 +21,4 @@ export default function Qrdiv({ qrCode,code,onTogle }) {
 			{code&&<h1 className="text-white text-7xl font-bold text-center" onClick={()=>{setShowCode((prev=>!prev))}}>{showCode?code:"ShowCode"}</h1>}
 		</div>
 	);
-}
+})

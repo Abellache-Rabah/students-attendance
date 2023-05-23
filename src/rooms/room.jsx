@@ -1,12 +1,12 @@
 import axios from 'axios'
 import React, { memo, useEffect, useLayoutEffect, useState } from 'react'
 import { useLocation } from "react-router-dom"
-import { toast } from 'react-toastify'
 import { io } from 'socket.io-client';
-import { useSelector,useDispatch } from 'react-redux';
-import {fetchSeassions } from '../redux/seassion';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchSeassions } from '../redux/seassion';
 import Qrdiv from './qrdiv';
 import ToggleRoom from './toggleRoom';
+import { Printer } from './printer';
 export default memo(function Room() {
     const dispatch = useDispatch()
     const [studentList, setstudentList] = useState([])
@@ -22,11 +22,10 @@ export default memo(function Room() {
                 "Content-Type": "application/x-www-form-urlencoded"
             }
         }).then(res => {
-            console.log(res.data);
             if (res.data.res) {
                 setstudentList(() => res.data.data)
             } else {
-                toast.error(res.data.mes, { closeButton: true })
+                console.log(res.data?.mes);
             }
         }).catch(err => {
             console.log(err);
@@ -47,9 +46,6 @@ export default memo(function Room() {
                 }
             });
             socket.connect()
-            socket.on("connect", () => {
-                console.log("connect");
-            })
             socket.emit("join-room", {
                 idRoom: location.state["_id"],
                 email: store.email
@@ -117,8 +113,6 @@ export default memo(function Room() {
         }
     }, [])
     const removeStudent = async (idstudent) => {
-        console.log(idstudent);
-        const wait = toast.loading("Please wait...")
         const req = {
             email: store.email,
             password: store.password,
@@ -132,18 +126,12 @@ export default memo(function Room() {
             }
         }).then(res => {
             if (res.data.res) {
-
-                setstudentList((prev) => prev.filter((item) => item["_id"] !== idstudent))
-                toast.update(wait, { render: "Room deleted", type: "success", isLoading: false, autoClose: true, delay: 2000 })
-                console.log("deleted");
+                setstudentList((prev) => prev.filter((item) => item["idStudent"] != idstudent))
             } else {
                 console.log(res.data.mes);
             }
-
         }).catch(err => {
             console.log(err);
-            toast.update(wait, { render: "Error", type: "error", isLoading: false, autoClose: true, delay: 2000 })
-
         })
 
     }
@@ -166,7 +154,6 @@ export default memo(function Room() {
                 await new Promise(resolve => setTimeout(resolve, 1))
                 setstudentListRemove([])
                 setClear(true)
-                console.log("deleted");
             }
         }).catch(err => {
             console.log(err)
@@ -182,10 +169,6 @@ export default memo(function Room() {
             setstudentListRemove(prev => prev.filter(element => element != id))
         }
     }
-useEffect(() => {
-    console.log(location.state);
-}, [])
-
     return (
         <div className='w-full h-full flex items-center flex-col gap-2  px-2'>
             <div className={`absolute top-0 right-1/2 w-full h-full translate-x-1/2 z-50 ${showQr ? "" : "hidden"}`}>
@@ -267,9 +250,13 @@ useEffect(() => {
             </table>
             <div className='w-full flex justify-between'>
                 <span onClick={toggler}>
-                    <ToggleRoom isStop={isStop}  />
+                    <ToggleRoom isStop={isStop} />
                 </span>
-                <button onClick={removeStudents} className='text-red-600 py-2 px-4 rounded-lg'>Delete</button>
+                <div className='flex gap-2'>
+                    <Printer apiData={studentList.map(e => ({ first_name: e.firstname, last_name: e.lastname, email: e.email, specialist: e.specialist, sex: e.sex }))} fileName={new Date(Date.now())} />
+                    <button onClick={removeStudents} className='text-red-600 py-2 px-4 rounded-lg'>Delete</button>
+
+                </div>
             </div>
         </div>
     )

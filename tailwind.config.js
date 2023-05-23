@@ -14,6 +14,7 @@ export default {
         "text-color": "#A0A3BD",
         "xr8": "#023E8A",
         "xr12": "#018DD7",
+        "ccc":"#999"
       }
     },
   },
