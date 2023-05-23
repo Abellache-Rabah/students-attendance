@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchSeassions } from '../redux/seassion';
 import Qrdiv from './qrdiv';
 import ToggleRoom from './toggleRoom';
-import { Printer } from './printer';
+import  Printer from './printer';
 export default memo(function Room() {
     const dispatch = useDispatch()
     const [studentList, setstudentList] = useState([])
@@ -253,7 +253,7 @@ export default memo(function Room() {
                     <ToggleRoom isStop={isStop} />
                 </span>
                 <div className='flex gap-2'>
-                    <Printer apiData={studentList.map(e => ({ first_name: e.firstname, last_name: e.lastname, email: e.email, specialist: e.specialist, sex: e.sex }))} fileName={new Date(Date.now())} />
+                    <Printer apiData={studentList.map(e => ({ first_name: e.firstname, last_name: e.lastname, email: e.email, specialist: e.specialist, sex: e.sex }))} />
                     <button onClick={removeStudents} className='text-red-600 py-2 px-4 rounded-lg'>Delete</button>
 
                 </div>
