@@ -101,7 +101,6 @@ export default function RoomParam() {
             <div className='w-full mb-4 md:mb-0 flex flex-col md:flex-row justify-between items-center '>
                 <button onClick={createQrcode} className='bg-orange-400 text-white  px-4 rounded-lg mb-2  py-3  mt-5 w-full'>Create with qrcode</button>
             </div>
-
         </div>
     )
 }
