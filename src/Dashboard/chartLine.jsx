@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import Chart from "react-apexcharts";
 import { useSelector } from 'react-redux';
 const MyCharts = () => {
     const seassions = useSelector(state => state.seassions)
     const [statistic, setStatistic] = useState([])
     const rooms = useSelector(state => state.rooms)
-    useEffect(() => {
+    const [date,setDate]=useState([])
+    const [currentDate,setCurrentDate]=useState(0)
+    useLayoutEffect(() => {
         const data = []
         if (seassions.seassions) {
             seassions.seassions.forEach(seassion => {
@@ -13,6 +15,7 @@ const MyCharts = () => {
             })
             setStatistic(data)
         }
+        rooms?.rooms&&setDate(()=>rooms.rooms.map(e=>e.createAt.split("T")[0]))
     }, [rooms.rooms, seassions.seassions]);
     return (
         <div className='w-5/6'>
@@ -23,7 +26,9 @@ const MyCharts = () => {
                         type: 'category',
                         labels: {
                             formatter: function (val) {
-                                return val
+                                let d=currentDate
+                                setCurrentDate((prev)=>prev++)
+                                return date[d]
                             },
                         },
 

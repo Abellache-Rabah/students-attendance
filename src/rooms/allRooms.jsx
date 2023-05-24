@@ -164,7 +164,7 @@ export default function AllRooms() {
                                 onPageChange={(page) => {
                                     setSelectForDelete(() => [])
                                     setMin(page - 1)
-                                    setMax(page + 5)
+                                    setMax(page + 4)
                                     setCurrentPage(page)
                                 }}
                                 showIcons={true}
