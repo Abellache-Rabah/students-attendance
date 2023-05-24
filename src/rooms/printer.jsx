@@ -18,6 +18,6 @@ export default memo(function Printer ({ apiData }) {
     return new Date(Date.now());
   }
   return (
-    <button onClick={(e) => exportToCSV(apiData, fileName)} ><BsPrinterFill className='fill-green-400' /> </button>
+    <button onClick={(e) => exportToCSV(apiData, fileName())} ><BsPrinterFill className='fill-green-400' /> </button>
   );
 });

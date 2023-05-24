@@ -18,17 +18,15 @@ function App() {
   const account = useSelector(state => state.account)
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const rooms = useSelector(state => state.rooms)
   const store = useSelector(state => state.account)
-  const seassions = useSelector(state => state.seassions)
-  const students = useSelector(state => state.students)
+  const [show,setShow]=useState(false)
   useEffect(() => {
     dispatch(fetchRooms(store))
   }, [account])
   useEffect(() => {
     dispatch(fetchSeassions(store))
   }, [account])
-  useLayoutEffect(() => {
+  useEffect(() => {
     let email = localStorage.getItem("email")
     let password = localStorage.getItem("password")
     if (email && password) {
@@ -36,6 +34,7 @@ function App() {
     } else {
       navigate("/Student-Attendance/sign/signin");
     }
+    setShow(true)
   }, [account])
   async function send(email, password) {
     let req = {
@@ -62,6 +61,9 @@ function App() {
     } catch (e) {
       navigate("/Student-Attendance/sign/signin");
     }
+  }
+  if (!show) {
+    return
   }
   return (
     <>
