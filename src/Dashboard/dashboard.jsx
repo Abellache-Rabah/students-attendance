@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState, useTransition } from 'react'
+import React, { memo, useEffect, useRef, useState, useTransition } from 'react'
 import Nav from '../nav/nav'
 import MyCharts from './chartLine'
 import { Dropdown, Pagination } from 'flowbite-react'
@@ -8,18 +8,19 @@ import axios from 'axios'
 import Tabel from './tabel'
 export default memo(function Dashboard() {
   const dispatch = useDispatch()
+  const [typeShearch, setTypeShearch] = useState('Name')
+  const [shearchInp, setShearchInp] = useState("")
   const account = useSelector(state => state.account)
   const rooms = useSelector(state => state.rooms)
   const seassions = useSelector(state => state.seassions)
-  const [ladding,transition]=useTransition()
+  const [ladding, transition] = useTransition()
   const students = useSelector(state => state.students)
   const [models, setModels] = React.useState([])
   const [specialist, setSpecialist] = React.useState([])
   const [currentModule, setCurrentModule] = useState("All modules")
   const [student, setStudent] = useState([])
-  const [currentPage,setCurrentPage]=useState(1)
   useEffect(() => {
-   rooms&&rooms.rooms&& transition(() => {
+    rooms && rooms.rooms && transition(() => {
       if (rooms.rooms.length <= 0) {
         setSpecialist(() => [])
         dispatch(emptyStudents())
@@ -127,13 +128,17 @@ export default memo(function Dashboard() {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
       }
-    }).then(res=>!res.data.res&&console.error(res.data?.mes)).catch(err => {
+    }).then(res => !res.data.res && console.error(res.data?.mes)).catch(err => {
       console.log(err);
     })
 
   }
+  const handle = (e) => {
+    e.preventDefault()
+    setShearchInp(e.target.value)
+  }
   return (
-    <div className='col-start-2 col-end-5 max-h-screen pb-7 h-screen overflow-y-auto'>
+    <div className='col-start-2 col-end-5 max-h-screen h-screen overflow-y-auto'>
       <div className='flex justify-center items-center gap-2 w-full flex-col'>
         <Nav />
         <div className='w-5/6 flex flex-col md:flex-row gap-2 justify-around items-center'>
@@ -154,11 +159,10 @@ export default memo(function Dashboard() {
           </div>
         </div>
         <MyCharts />
-        <div className='w-full bg-white py-2 px-4'>
-          <div className='w-full flex flex-col md:flex-row md:items-end mb-3 justify-between'>
-            <div className='flex items-center flex-col md:flex-row md:w-1/2 gap-5'>
-              <div className='flex flex-col gap-2 '>
-                <p>model</p>
+        <div className='w-full bg-white pb-10 pt-4 px-4'>
+          <div className='w-full flex flex-col md:flex-row items-center mb-3 gap-2 justify-between'>
+            <div className='flex items-center flex-col md:flex-row gap-5'>
+              <div className='flex flex-col gap-2'>
                 <div className='bg-secondary rounded-lg py-3 bg-opacity-40 px-5 w-full'>
                   <Dropdown
                     label={currentModule}
@@ -173,9 +177,28 @@ export default memo(function Dashboard() {
                 </div>
               </div>
             </div>
+            <div className='flex gap-2'>
+              <div className='flex items-center justify-center py-0 bg-white rounded-lg ps-5'>
+                <Dropdown label={typeShearch} inline={true}>
+                  <Dropdown.Item onClick={() => setTypeShearch("Name")}>
+                    Name
+                  </Dropdown.Item>
+                  <Dropdown.Item onClick={() => setTypeShearch("Email")}>
+                    Email
+                  </Dropdown.Item>
+                  <Dropdown.Item onClick={() => setTypeShearch("Presents")}>
+                    Presents
+                  </Dropdown.Item>
+                  <Dropdown.Item onClick={() => setTypeShearch("Absence")}>
+                  Absence
+                  </Dropdown.Item>
+                </Dropdown>
+                <input type="text" placeholder='shearch' onChange={handle} className='w-1/2 border-none placeholder:opacity-50 bg-transparent focus:ring-0 py-2' />
+                 </div>
+            </div>
             <button onClick={sendToAllStudent} className='bg-secondary  rounded-lg py-3 bg-opacity-40 hover:bg-indigo-400 hover:bg-opacity-50  px-5'>Send to all students</button>
           </div>
-          <Tabel seassions={seassions} students={students} currentPage={currentPage} setCurrentPage={setCurrentPage} currentModule={currentModule} account={account} rooms={rooms}/>
+          <Tabel seassions={seassions} students={students} currentModule={currentModule} account={account} rooms={rooms} shearch={shearchInp} typeShearch={typeShearch} />
         </div>
       </div>
     </div>

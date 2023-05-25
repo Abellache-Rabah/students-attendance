@@ -5,10 +5,11 @@ import { useRef, useState } from "react";
 import axios from "axios"
 import { toast } from "react-toastify";
 export default function Forget() {
-    const navigate=useNavigate()
+    const [isLoading, setIsLoading] = useState(false)
+    const navigate = useNavigate()
     const [state, setState] = useState({
         invalidinpute:
-            "border-gray-300 text-gray-900 dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:border-blue-600",
+            "border-gray-300 text-gray-900 dark:text-white dark:border-gray-600 dark:focus:border-xr12 focus:border-xr12",
         invalidelabel:
             "text-gray-500 dark:text-gray-400 peer-focus:text-blue-600 peer-focus:dark:text-blue-500",
     });
@@ -41,21 +42,35 @@ export default function Forget() {
             }));
         }
     }
-    const sendCode = (e) => {
+    const sendCode = async (e) => {
         e.preventDefault()
-        const wait=toast.loading("Wait few minut")
+        if (isLoading) {
+            return
+        }
+        setIsLoading(true)
+        const wait = toast.loading("Wait few minut")
         if (validateEmailUsername(emailuser.current.value)) {
             axios.post("https://simpleapi-p29y.onrender.com/teacher/authResetPassword", { email: emailuser.current.value }, { headers: { "Content-Type": "application/x-www-form-urlencoded" } })
-            .then(async res=>{
-                if (res.data.res) {
-                    toast.update(wait, { render: "Success", type: "success", isLoading: false, autoClose: 1000 });
-                    await new Promise((resolve) => setTimeout(resolve, 1000))
-                    navigate("auth",{state:{email:emailuser.current.value}})
-                }else{
-                    toast.update(wait, { render: res.data.mes, type: "error", isLoading: false, delay: 1000, autoClose: true });
-                }
-            }).catch(err=>{ toast.update(wait, { render: err, type: "error", isLoading: false, delay: 1000, autoClose: true });})
+                .then(async res => {
+                    if (res.data.res) {
+                        toast.update(wait, { render: "Success", type: "success", isLoading: false, autoClose: 2000 });
+                        await new Promise((resolve) => setTimeout(resolve, 3000))
+                        setIsLoading(false)
+                        navigate("auth", { state: { email: emailuser.current.value } })
+                    } else {
+                        toast.update(wait, { render: res.data?.mes, type: "error", isLoading: false, autoClose: 2000 });
+                        setIsLoading(false)
+                    }
+                }).catch(async err => {
+                    toast.update(wait, { render: err, type: "error", isLoading: false, autoClose: 2000 });
+                    setIsLoading(false)
+
+                })
+        } else {
+            toast.update(wait, { render: "Entry your enail correctly", type: "error", isLoading: false, autoClose: 2000 });
+            setIsLoading(false)
         }
+        setIsLoading(false)
     }
     return (
         <div className="h-full flex justify-center items-center">
@@ -75,7 +90,7 @@ export default function Forget() {
                                     <input
                                         type={"email"}
                                         ref={emailuser}
-                                        onChange={handle}
+                                        onBlur={handle}
                                         name="floating_email"
                                         id="floating_email"
                                         className={`block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 ${state.invalidinpute} appearance-none focus:outline-none focus:ring-0 peer`}
@@ -89,7 +104,7 @@ export default function Forget() {
                                         Username or Email
                                     </label>
                                 </div>
-                                <button onClick={sendCode} className="rounded-lg bg-sky-400 py-2 px-4 w-full flex justify-center items-center text-white">Send password</button>
+                                <button onClick={sendCode} className="rounded-lg bg-xr12 py-2 px-4 w-full flex justify-center items-center text-white">Send password</button>
                             </div>
                         </>
                     } />

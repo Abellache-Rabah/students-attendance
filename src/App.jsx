@@ -74,7 +74,7 @@ function App() {
           element={
             <>
               <Header />
-              <div className="md:grid md:grid-cols-4 md:grid-rows-1 overflow-y-auto h-full">
+              <div className="md:grid md:grid-cols-4 md:grid-rows-1 pb-16 overflow-y-auto h-full">
                 <ListHeader
                   className={"hidden md:block w-fit col-start-1 h-full col-end-2"}
                 />

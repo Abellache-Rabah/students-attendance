@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux"
 export default function Signin() {
   const account = useSelector((state) => state.account)
   const dispatch = useDispatch();
+  const [isLoading,setIsLoading]=useState(false)
   const [state, setState] = useState({
     invalidinpute:
       "border-gray-300 text-gray-900 dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:border-blue-600",
@@ -18,6 +19,10 @@ export default function Signin() {
   const password = useRef();
   const navigate = useNavigate();
   async function send() {
+    if (isLoading) {
+      return
+    }
+    setIsLoading(true)
     const wait = toast.loading("Please wait...")
     let req;
     let data;
@@ -43,12 +48,12 @@ export default function Signin() {
         localStorage.setItem("password",req.password)
         navigate("/Student-Attendance/Dashboard");
       } else {
-
         toast.update(wait, { render: data.data.mes, type: "error", isLoading: false, delay: 1000, autoClose: true });
       }
     } else {
       toast.update(wait, { render: "check your information", type: "error", isLoading: false, delay: 1000, autoClose: true });
     }
+    setIsLoading(false)
   }
 
   function validateEmailUsername(email) {
@@ -83,9 +88,7 @@ export default function Signin() {
     <div className="flex items-center justify-center">
       <div className="w-5/6 md:w-3/5">
         <div className="mb-5 dark:text-white">
-          <p className="text-3xl font-semibold font-serif">
-            Welcome to the page
-          </p>
+          <img className="my-4" src="../img/LogoQr.svg" alt="" />
           <p className="text-zinc-500 mt-3 font-serif dark:text-slate-400">
             Welcome,please entre details.
           </p>
@@ -126,7 +129,7 @@ export default function Signin() {
           </label>
         </div>
         <div className="mt-3">
-          <Link to={"../forget"} className="text-purple-900 font-serif" href="#">
+          <Link to={"../forget"} className="text-zinc-500 font-serif" href="#">
             Forget password
           </Link>
         </div>
@@ -134,7 +137,7 @@ export default function Signin() {
           onClick={() => {
             send();
           }}
-          className="w-full mt-6 mb-3 bg-purple-500 rounded-md h-10 text-white font-serif"
+          className="w-full mt-6 mb-3 bg-xr12 rounded-md h-10 text-white font-serif"
         >
           Sign in
         </button>
@@ -142,7 +145,7 @@ export default function Signin() {
           <p className="font-serif dark:text-white">if dont have an account?</p>
           <Link
             to={"../signup"}
-            className="pl-1 text-purple-900 font-serif dark:text-purple-500"
+            className="pl-1 text-xr12 font-serif"
           >
             sign up
           </Link>

@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
-import { Pagination } from 'flowbite-react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
+import { Dropdown, Pagination } from 'flowbite-react'
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { setRooms } from '../redux/roomsReducer';
-import { fetchSeassions } from '../redux/seassion';
-import RoomParam from './roomParam';
+import { setRooms } from '../../redux/roomsReducer';
+import { fetchSeassions } from '../../redux/seassion';
+import RoomParam from '../roomParam';
 import { useNavigate } from 'react-router-dom';
 export default function AllRooms() {
     const navigate = useNavigate()
@@ -16,6 +16,16 @@ export default function AllRooms() {
     const [max, setMax] = useState(5)
     const [clear, setClear] = useState(true)
     const [selectForDelete, setSelectForDelete] = useState([])
+    const [typeShearch, setTypeShearch] = useState('Module')
+    const [shearchInp, setShearchInp] = useState("")
+    const [filter, setFilter] = useState([])
+    const handle = (e) => {
+        e.preventDefault()
+        setShearchInp(e.target.value)
+    }
+    useLayoutEffect(() => {
+        rooms?.rooms && setFilter(rooms.rooms.filter((room) => (!shearchInp || (typeShearch == "Module" && !`${room?.module}`.toLowerCase().indexOf(shearchInp.toLowerCase())) || (typeShearch == "Code" && !`${room?.code}`.toLowerCase().indexOf(shearchInp.toLowerCase())) || (typeShearch == "Type" && !`${room?.type}`.toLowerCase().indexOf(shearchInp.toLowerCase())))))
+    }, [rooms,shearchInp,typeShearch])
     const removeRoom = async (id) => {
         const req = {
             email: store.email,
@@ -88,6 +98,22 @@ export default function AllRooms() {
     return (
         <>
             <RoomParam />
+            <div className='flex gap-2'>
+                <div className='flex items-center justify-between py-0 bg-white rounded-lg ps-5'>
+                    <Dropdown label={typeShearch} inline={true}>
+                        <Dropdown.Item onClick={() => setTypeShearch("Module")}>
+                            Module
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => setTypeShearch("Code")}>
+                            Code
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => setTypeShearch("Type")}>
+                            Type
+                        </Dropdown.Item>
+                    </Dropdown>
+                    <input type="text" placeholder='shearch' onChange={handle} className='w-1/2 border-none placeholder:opacity-50 bg-transparent focus:ring-0 py-2' />
+                </div>
+            </div>
             <div className='w-full h-full flex justify-center items-center'>
                 <div className='w-full flex items-center flex-col' >
                     {!rooms.isloading && <div className="w-11/12  bg-transparent shadow-none relative overflow-x-auto   sm:rounded-lg">
@@ -119,7 +145,7 @@ export default function AllRooms() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {clear && rooms?.rooms && rooms.rooms.map((room, index) => {
+                                {clear && filter.length>0&& filter.map((room, index) => {
                                     if (index >= min && index < max) {
                                         return (
                                             <tr key={index} onDoubleClick={() => { fetchSession(room["_id"]) }} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
@@ -140,7 +166,7 @@ export default function AllRooms() {
                                                     scope="row"
                                                     className="px-1 md:px-6  py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                                                 >
-                                                    {room?.module}
+                                                    {index + 1} - {room?.module}
                                                 </th>
                                                 <td className="px-1 md:px-6  py-4">{room?.code ? room.code : "Empty"}</td>
                                                 <td className="px-1 md:px-6  py-4 hidden md:block">{room?.type}</td>
@@ -162,17 +188,27 @@ export default function AllRooms() {
                                 currentPage={currentPage}
                                 layout="table"
                                 onPageChange={(page) => {
-                                    setSelectForDelete(() => [])
-                                    setMin(page - 1)
-                                    setMax(page + 4)
-                                    setCurrentPage(page)
+                                    let newMin;
+                                    let newMax;
+                                    if (page > currentPage) {
+                                        newMin = Math.max((page - 1) * 5, 0);
+                                        newMax = page * 5;
+                                        setMin(newMin);
+                                        setMax(newMax);
+                                        setCurrentPage(page);
+                                    } else if (page < currentPage && currentPage != 1) {
+                                        newMin = Math.max((page - 2) * 5, 0);
+                                        newMax = (page) * 5;
+                                        setMin(newMin);
+                                        setMax(newMax);
+                                        setCurrentPage(page);
+                                    }
                                 }}
                                 showIcons={true}
-                                totalPages={rooms?.rooms ? Math.ceil(rooms.rooms.length / 5) : 1}
+                                totalPages={filter.length>0 ? Math.ceil(filter.length / 5) : 1}
                             />
                             <button onClick={removeRooms} className='text-red-600 py-2 px-4 rounded-lg'>Delete</button>
                         </nav>
-
                     </div>}
                 </div>
 
