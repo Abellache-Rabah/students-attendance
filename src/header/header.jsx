@@ -13,17 +13,14 @@ export default memo(function Header() {
     const toggleMenu = () => {
         setShowMenu(prev => !prev)
     }
-    useEffect(() => {
-        console.log(acount);
-    }, []);
-    const logout = () => {
+    const logout1 = () => {
         dispatch(logout())
         navigate("../sign")
     }
     return (
         <>
-            <div className='flex justify-around py-2 md:hidden'>
-               
+            <div className='flex justify-around px-5 py-5 md:hidden'>
+                <img className="w-40" src="../img/LogoQr.svg" alt="" />
                 <div className='flex gap-2'>
                     <Dropdown inline={true} label={<Avatar rounded={true} />} placement='auto'>
                         <Dropdown.Header>
@@ -34,12 +31,12 @@ export default memo(function Header() {
                                 {acount.email}
                             </span>
                         </Dropdown.Header>
-                        <Dropdown.Item onClick={logout}>
+                        <Dropdown.Item onClick={logout1}>
                             Logout
                             { }
                         </Dropdown.Item>
                     </Dropdown>
-                    <img src="./img/Line.svg" alt="" onClick={toggleMenu} />
+                    <img src="../img/Line.svg" alt="" onClick={toggleMenu} />
                 </div>
             </div>
             <ListHeader className={`duration-300 absolute top-0 ${showMenu ? "translate-x-0" : "-translate-x-full"}`} />

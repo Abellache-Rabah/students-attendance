@@ -8,6 +8,7 @@ import {setAcount} from '../redux/accountReducer'
 export default function Signup(params) {
   const [spE, setSpE] = useState([])
   const dispatch = useDispatch();
+  const [isLoading,setIsLoading]=useState(false)
   const [state, setState] = useState({
     validateusername: [
       "border-gray-300 text-gray-900 dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600",
@@ -52,11 +53,13 @@ export default function Signup(params) {
   const company = useRef();
   const navigate = useNavigate();
   async function sendCode() {
+    if (isLoading) {
+      return
+    }
+    setIsLoading(true)
     const wait = toast.loading("Please wait...")
     let res;
-    console.log(sp.current.value);
     let req = { email: email.current.value };
-
     if (validateEmail(email.current.value) && validateName(sp.current.value) && validateName(fname.current.value) && validatepassword(p.current.value) && validateName(lname.current.value)) {
       res = await axios.post(
         "https://simpleapi-p29y.onrender.com/teacher/auth",
@@ -71,28 +74,24 @@ export default function Signup(params) {
         toast.update(wait, { render: "Send code", type: "success", isLoading: false,autoClose:2000})
         setIshedden((prevValue) => !prevValue)
       } else {
-        toast.update(wait, { render: res.data.msg, type: "error", isLoading: false, data: 2000 })
+        toast.update(wait, { render: res.data.msg, type: "error", isLoading: false, data: 2000 ,autoClose:2000})
       }
     } else {
       await new Promise((resolve) => setTimeout(resolve, 1000))
-      toast.update(wait, { render: "chek your information", type: "error", isLoading: false, data: 2000})
-
+      toast.update(wait, { render: "chek your information", type: "error", isLoading: false, data: 2000,autoClose:2000})
     }
+    setIsLoading(false)
   }
   const fetchspecialist = async () => {
-
     await axios.get("https://simpleapi-p29y.onrender.com/specialist", {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
       }
     }).then(res => {
-      console.log(res.data)
       setSpE((e) => res.data)
-
     }).catch(err => {
       console.log(err);
     })
-
   }
   useEffect(() => {
     fetchspecialist()
@@ -120,12 +119,11 @@ export default function Signup(params) {
           },
         }
       );
-
       if (res.data.res) {
         dispatch(setAcount(res.data.data))
         toast.update(wait, { render: "Success", type: "success", isLoading: false, autoClose: true });
         await new Promise((resolve) => setTimeout(resolve, 1000))
-        navigate("/");
+        navigate("/Student-Attendance/Dashboard/");
       } else {
         toast.error(res.data.mes, {
           position: toast.POSITION.TOP_RIGHT,
@@ -142,7 +140,7 @@ export default function Signup(params) {
   }
   function validateName(username) {
     return (
-      String(username).match(/^([a-z]+)$/) && String(username).length <= 15
+      String(username).match(/^([a-zA-z]+)$/) && String(username).length <= 15
     );
   }
   function validateNumbre(numbre) {
@@ -159,26 +157,6 @@ export default function Signup(params) {
   }
   function validatepassword(password) {
     return String(password).length < 30 ? true : false;
-  }
-  function handleusername(e) {
-    let value = e.target.value;
-    if (validateusername(value) || e.target.value == "") {
-      setState((dstate) => ({
-        ...dstate,
-        validateusername: [
-          "border-gray-300 text-gray-900 dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600",
-          "peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6",
-        ],
-      }));
-    } else {
-      setState((dstate) => ({
-        ...dstate,
-        validateusername: [
-          "border-red-300 text-red-900 dark:text-red dark:border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600",
-          "peer-focus:font-medium absolute text-sm text-red-500 dark:text-red-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-red-600 peer-focus:dark:text-red-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6",
-        ],
-      }));
-    }
   }
   function handle(e) {
     let value = e.target.value;
@@ -385,11 +363,9 @@ export default function Signup(params) {
           </div>
         </div>
         <div className="mb-3 dark:text-white">
-          <p className="text-3xl font-semibold font-serif">
-            Welcome to the page
-          </p>
-          <p className="text-zinc-500 mt-3 font-serif dark:text-slate-400">
-            Welcome,please entre details.
+        <img className="my-4" src="../img/LogoQr.svg" alt="" />
+          <p className="text-zinc-500 mt-3 font-serif">
+            Welcome,please enter details.
           </p>
         </div>
 
@@ -495,8 +471,8 @@ export default function Signup(params) {
 
           <div className="relative z-0 mb-3 w-full group">
 
-            <select name="speaciality"   ref={sp} id="speaciality" className='block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer'>
-            <option selected disabled>specialist</option>
+            <select name="speaciality" defaultValue={""} ref={sp} id="speaciality" className='block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer'>
+            <option value={""} disabled>specialist</option>
               {spE && spE.map((e, i) => {
                 return (<option key={i} value={e.specialist}>{e.specialist}</option>)
               })}
@@ -505,10 +481,10 @@ export default function Signup(params) {
                     </div>
           <div>
 
-            <select ref={company} id="underline_select" className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-
+            <select ref={company} id="underline_select" defaultValue={""} className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+            <option value={""} disabled>Male Or Female</option>
               <option value="Male">Male</option>
-              <option value="Fimale">Fmail</option>
+              <option value="Fimale">Female</option>
             </select>
           </div>
         </div>
@@ -518,18 +494,18 @@ export default function Signup(params) {
 
 
           }}
-          className="w-full mt-6 mb-3 bg-purple-500 rounded-md h-10 text-white font-serif"
+          className="w-full mt-6 mb-3 bg-xr12 rounded-md h-10 text-white font-serif"
         >
           Sign up
         </button>
 
         <div className="flex justify-center mt-5">
-          <p className="font-serif dark:text-white">you have an account?</p>
+          <p className="font-serif">you have an account?</p>
           <Link
             to={"../signin"}
-            className="pl-1 text-purple-900 font-serif dark:text-purple-500"
+            className="pl-1 text-xr12 font-serif"
           >
-            sing in
+            sign in
           </Link>
         </div>
       </div>

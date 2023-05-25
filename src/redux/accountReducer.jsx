@@ -26,6 +26,8 @@ const accountSlice = createSlice(
                 state.specialist = ''
                 state.firstName = ''
                 state.lastName = ''
+                localStorage.removeItem("email")
+                localStorage.removeItem("password")
             }
         }
     }

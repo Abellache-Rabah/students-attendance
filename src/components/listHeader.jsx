@@ -1,14 +1,14 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { Sidebar } from 'flowbite-react'
-import {  HiLogout,HiOutlineUser } from 'react-icons/hi'
-import {  AiFillSetting } from 'react-icons/ai'
-import {useNavigate} from "react-router-dom"
+import { HiLogout } from 'react-icons/hi'
+
+import { useNavigate } from "react-router-dom"
 import { Link } from 'react-router-dom'
-import {useDispatch} from "react-redux"
-import { logout} from "../redux/accountReducer"
-export default function ListHeader({ className }) {
-    const navigate=useNavigate()
-    const dispatch=useDispatch()
+import { useDispatch } from "react-redux"
+import { logout } from "../redux/accountReducer"
+export default memo(function ListHeader({ className }) {
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
     return (
         <div className={`md:w-full w-fit ${className} bg-gray-50 shadow-md z-50`}>
             <>
@@ -17,17 +17,17 @@ export default function ListHeader({ className }) {
                     className="h-full w-full"
                     aria-label="Sidebar"
                 >
-                    <div className="h-full w-full px-3 py-4 overflow-y-auto flex flex-col justify-between bg-gray-50 dark:bg-gray-800">
+                    <div className="h-screen w-full px-3 py-4 overflow-y-auto flex flex-col justify-between bg-gray-50 dark:bg-gray-800">
 
                         <ul className="space-y-2 font-medium">
                             <div className='p-2'>
                             </div>
                             <li>
                                 <Link
-                                to={"/dashboard"}
+                                    to={"/Student-Attendance/Dashboard/"}
                                     className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                                 >
-                                     <svg
+                                    <svg
                                         aria-hidden="true"
                                         className="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                         fill="currentColor"
@@ -36,14 +36,14 @@ export default function ListHeader({ className }) {
                                     >
                                         <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
                                         <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
-                                    </svg> 
-                                   
+                                    </svg>
+
                                     <span className="ml-3">Dashboard</span>
                                 </Link>
                             </li>
                             <li>
                                 <Link
-                                    to={"/rooms"}
+                                    to={"/Student-Attendance/rooms/"}
                                     className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                                 >
                                     <svg
@@ -62,23 +62,33 @@ export default function ListHeader({ className }) {
                         </ul>
                         <ul className="py-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
                             <li>
-                                <a
-                                    href="#"
-                                    className="flex items-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group"
+                                <Link
+                                    to={"/Student-Attendance/ourteam/"}
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                                 >
-                                    <AiFillSetting/>
-                                    <span className="ml-4">Settings</span>
-                                </a>
+                                    <svg
+                                        aria-hidden="true"
+                                        className="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
+                                        <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
+                                    </svg>
+
+                                    <span className="ml-3">Our Team</span>
+                                </Link>
                             </li>
-                            <li onClick={()=>{
+                            <li onClick={() => {
                                 dispatch(logout())
-                                navigate("/sign")
-                                }}>
+                                navigate("/Student-Attendance/sign/")
+                            }}>
                                 <div
-                                    
+
                                     className="flex items-center p-2 cursor-pointer text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group"
                                 >
-                                    <HiLogout/>
+                                    <HiLogout />
                                     <span className="ml-3">Logout</span>
                                 </div>
                             </li>
@@ -132,4 +142,4 @@ export default function ListHeader({ className }) {
             </Sidebar> */}
         </div>
     )
-}
+})

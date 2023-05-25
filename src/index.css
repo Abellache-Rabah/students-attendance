@@ -1,6 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@font-face {
+  font-family: 'MyCustomFont';
+  src: url('../font/Ubuntu-Regular.ttf')
+}
+*{
+  font-family: 'MyCustomFont' !important;
+}
 table{
   margin: 0 !important;
 }

@@ -15,8 +15,7 @@ const fetchRooms = createAsyncThunk(
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
             })
-            let d = []
-            return response.data.data.reverse()
+            return response.data.data&&response.data.data.reverse()
         } catch (err) {
             console.log(err)
             throw err
