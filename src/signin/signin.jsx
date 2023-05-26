@@ -97,7 +97,7 @@ export default function Signin() {
           <input
             type={"email"}
             ref={emailuser}
-            onChange={handle}
+            onBlur={handle}
             name="floating_email"
             id="floating_email"
             className={`block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 ${state.invalidinpute} appearance-none focus:outline-none focus:ring-0 peer`}

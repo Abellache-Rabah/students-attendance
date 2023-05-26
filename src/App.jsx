@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import Navbar from "./navbar/navbar";
 import Header from "./header/header";
 import ListHeader from "./components/listHeader";
-import { BrowserRouter, Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import Dashboard from "./Dashboard/dashboard";
 import Rooms from "./rooms/rooms";
 import CreateRoom from "./createRoom/createRoom";
@@ -15,6 +15,7 @@ import OurTeam from "./OurTeam/ourTeam";
 import { setAcount } from "./redux/accountReducer";
 import axios from "axios";
 function App() {
+  const location = useLocation()
   const account = useSelector(state => state.account)
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -29,10 +30,15 @@ function App() {
   useEffect(() => {
     let email = localStorage.getItem("email")
     let password = localStorage.getItem("password")
-    if (email && password) {
-      send(email, password)
-    } else {
-      navigate("/Student-Attendance/sign/signin");
+    console.log(location.pathname== "/Student-Attendance/sign/signup" );
+    if (location.pathname == "/Student-Attendance/sign/signup" || location.pathname == "/Student-Attendance/sign/signin") {
+     
+    }else{
+      if (email && password) {
+        send(email, password)
+      } else {
+        navigate("/Student-Attendance/sign/signin");
+      }
     }
     setShow(true)
   }, [account])
