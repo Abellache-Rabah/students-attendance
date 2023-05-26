@@ -19,7 +19,7 @@ function App() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const store = useSelector(state => state.account)
-  const [show,setShow]=useState(false)
+  const [show, setShow] = useState(false)
   useEffect(() => {
     dispatch(fetchRooms(store))
   }, [account])
@@ -73,8 +73,8 @@ function App() {
           path="/*"
           element={
             <>
-              <Header />
-              <div className="md:grid md:grid-cols-4 md:grid-rows-1 pb-16 overflow-y-auto h-full">
+              <div className="md:grid md:grid-cols-4 mb-10 md:mb-0 md:grid-rows-1 overflow-y-auto h-full">
+                <Header />
                 <ListHeader
                   className={"hidden md:block w-fit col-start-1 h-full col-end-2"}
                 />
