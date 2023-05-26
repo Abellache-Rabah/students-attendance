@@ -6,7 +6,7 @@ import RoomPrev from './roomPrev';
 import AllRooms from './allRooms';
 export default function Rooms() {
     return (
-        <div className='col-start-2 col-end-6 gap-y-2 mb-4 overflow-y-auto pb-10 flex flex-col items-center'>
+        <div className='col-start-2 col-end-6 gap-y-2 mb-8 overflow-y-auto pb-10 flex flex-col items-center'>
             <Nav />
             <Routes>
                 <Route path='/*' element={<AllRooms/>} />

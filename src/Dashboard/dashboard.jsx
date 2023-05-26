@@ -138,7 +138,7 @@ export default memo(function Dashboard() {
     setShearchInp(e.target.value)
   }
   return (
-    <div className='col-start-2 col-end-5 mb-4 max-h-screen h-full overflow-y-auto'>
+    <div className='col-start-2 col-end-5 mb-8 max-h-screen h-full overflow-y-auto'>
       <div className='flex justify-center items-center gap-2 w-full flex-col overflow-y-auto'>
         <Nav />
         <div className='w-5/6 flex flex-col md:flex-row gap-2 justify-around items-center overflow-y-auto'>
