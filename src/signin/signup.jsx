@@ -69,13 +69,17 @@ export default function Signup(params) {
             "Content-Type": "application/x-www-form-urlencoded",
           },
         }
-      );
-      if (res.data.res) {
-        toast.update(wait, { render: "Send code", type: "success", isLoading: false, autoClose: 2000 })
-        setIshedden((prevValue) => !prevValue)
-      } else {
-        toast.update(wait, { render: res.data.mes, type: "error", isLoading: false, data: 2000, autoClose: 2000 })
-      }
+      ).then(res=>{
+        if (res.data.res) {
+          toast.update(wait, { render: "Send code", type: "success", isLoading: false, autoClose: 2000 })
+          setIshedden((prevValue) => !prevValue)
+        } else {
+          toast.update(wait, { render: res.data.mes, type: "error", isLoading: false, data: 2000, autoClose: 2000 })
+        }
+      }).catch(err=>{
+        toast.update(wait, { render: err, type: "error", isLoading: false, data: 2000, autoClose: 2000 })
+      });
+     
     } else {
       await new Promise((resolve) => setTimeout(resolve, 1000))
       toast.update(wait, { render: "chek your information", type: "error", isLoading: false, data: 2000, autoClose: 2000 })
@@ -118,17 +122,19 @@ export default function Signup(params) {
             "Content-Type": "application/x-www-form-urlencoded",
           },
         }
-      );
-      if (res.data.res) {
-        dispatch(setAcount(res.data.data))
-        toast.update(wait, { render: "Success", type: "success", isLoading: false, autoClose: true });
-        await new Promise((resolve) => setTimeout(resolve, 1000))
-        navigate("/Student-Attendance/Dashboard/");
-      } else {
-        toast.error(res.data.mes, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
-      }
+      ).then(async res => {
+        if (res.data.res) {
+          dispatch(setAcount(res.data?.data))
+          toast.update(wait, { render: "Success", type: "success", isLoading: false, autoClose: true });
+          await new Promise((resolve) => setTimeout(resolve, 1000))
+          navigate("/Student-Attendance/Dashboard/");
+        } else {
+          toast.update(wait, { render: res.data?.mes, type: "error", isLoading: false, autoClose: true });
+        }
+      }).catch(err => {
+        toast.update(wait, { render: err, type: "error", isLoading: false, autoClose: true });
+      });
+
     }
   }
   function validateEmail(email) {
