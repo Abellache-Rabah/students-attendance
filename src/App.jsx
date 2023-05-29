@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import Navbar from "./navbar/navbar";
 import Header from "./header/header";
 import ListHeader from "./components/listHeader";
-import { BrowserRouter, Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import Dashboard from "./Dashboard/dashboard";
 import Rooms from "./rooms/rooms";
 import CreateRoom from "./createRoom/createRoom";
@@ -15,11 +15,12 @@ import OurTeam from "./OurTeam/ourTeam";
 import { setAcount } from "./redux/accountReducer";
 import axios from "axios";
 function App() {
+  const location = useLocation()
   const account = useSelector(state => state.account)
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const store = useSelector(state => state.account)
-  const [show,setShow]=useState(false)
+  const [show, setShow] = useState(false)
   useEffect(() => {
     dispatch(fetchRooms(store))
   }, [account])
@@ -29,10 +30,15 @@ function App() {
   useEffect(() => {
     let email = localStorage.getItem("email")
     let password = localStorage.getItem("password")
-    if (email && password) {
-      send(email, password)
-    } else {
-      navigate("/Student-Attendance/sign/signin");
+    console.log(location.pathname== "/Student-Attendance/sign/signup" );
+    if (location.pathname == "/Student-Attendance/sign/signup" || location.pathname == "/Student-Attendance/sign/signin") {
+     
+    }else{
+      if (email && password) {
+        send(email, password)
+      } else {
+        navigate("/Student-Attendance/sign/signin");
+      }
     }
     setShow(true)
   }, [account])
@@ -73,8 +79,8 @@ function App() {
           path="/*"
           element={
             <>
-              <Header />
-              <div className="md:grid md:grid-cols-4 md:grid-rows-1 pb-16 overflow-y-auto h-full">
+              <div className="md:grid md:grid-cols-4 mb-10 md:mb-0 md:grid-rows-1 overflow-y-auto h-full">
+                <Header />
                 <ListHeader
                   className={"hidden md:block w-fit col-start-1 h-full col-end-2"}
                 />

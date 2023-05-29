@@ -2,9 +2,9 @@ import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { Dropdown, Pagination } from 'flowbite-react'
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { setRooms } from '../../redux/roomsReducer';
-import { fetchSeassions } from '../../redux/seassion';
-import RoomParam from '../roomParam';
+import { setRooms } from '../redux/roomsReducer';
+import { fetchSeassions } from '../redux/seassion';
+import RoomParam from './roomParam';
 import { useNavigate } from 'react-router-dom';
 export default function AllRooms() {
     const navigate = useNavigate()
@@ -114,9 +114,9 @@ export default function AllRooms() {
                     <input type="text" placeholder='shearch' onChange={handle} className='w-1/2 border-none placeholder:opacity-50 bg-transparent focus:ring-0 py-2' />
                 </div>
             </div>
-            <div className='w-full h-full flex justify-center items-center'>
+            <div className='w-full h-full flex justify-center items-start'>
                 <div className='w-full flex items-center flex-col' >
-                    {!rooms.isloading && <div className="w-11/12  bg-transparent shadow-none relative overflow-x-auto   sm:rounded-lg">
+                    {!rooms.isloading && <div className="w-11/12  bg-transparent shadow-none relative overflow-auto   sm:rounded-lg">
                         <table className="w-full h-full rounded-3xl shadow-sm text-sm text-left text-gray-500 dark:text-gray-400">
                             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>

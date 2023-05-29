@@ -39,7 +39,7 @@ export default memo(function Header() {
                     <img src="../img/Line.svg" alt="" onClick={toggleMenu} />
                 </div>
             </div>
-            <ListHeader className={`duration-300 absolute top-0 ${showMenu ? "translate-x-0" : "-translate-x-full"}`} />
+            <ListHeader className={`duration-300 h-full absolute top-0 ${showMenu ? "translate-x-0" : "-translate-x-full"}`} />
         </>
     )
 }

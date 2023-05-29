@@ -17,7 +17,7 @@ export default memo(function ListHeader({ className }) {
                     className="h-full w-full"
                     aria-label="Sidebar"
                 >
-                    <div className="h-screen w-full px-3 py-4 overflow-y-auto flex flex-col justify-between bg-gray-50 dark:bg-gray-800">
+                    <div className="h-full w-full px-3 py-4 overflow-y-auto flex flex-col justify-between bg-gray-50 dark:bg-gray-800">
 
                         <ul className="space-y-2 font-medium">
                             <div className='p-2'>

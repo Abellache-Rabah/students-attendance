@@ -138,10 +138,10 @@ export default memo(function Dashboard() {
     setShearchInp(e.target.value)
   }
   return (
-    <div className='col-start-2 col-end-5 max-h-screen h-screen overflow-y-auto'>
-      <div className='flex justify-center items-center gap-2 w-full flex-col'>
+    <div className='col-start-2 col-end-5 mb-8 max-h-screen h-full overflow-y-auto'>
+      <div className='flex justify-center items-center gap-2 w-full flex-col overflow-y-auto'>
         <Nav />
-        <div className='w-5/6 flex flex-col md:flex-row gap-2 justify-around items-center'>
+        <div className='w-5/6 flex flex-col md:flex-row gap-2 justify-around items-center overflow-y-auto'>
           <div className='border-border-color bg-white w-full border-4 flex flex-col gap-y-2 px-10 py-4'>
             <p>Welcome </p>
             <p className='font-semibold'>{account?.firstName} {account?.lastName}</p>
@@ -159,7 +159,7 @@ export default memo(function Dashboard() {
           </div>
         </div>
         <MyCharts />
-        <div className='w-full bg-white pb-10 pt-4 px-4'>
+        <div className='w-full bg-white pb-10 pt-4 px-4 overflow-y-auto'>
           <div className='w-full flex flex-col md:flex-row items-center mb-3 gap-2 justify-between'>
             <div className='flex items-center flex-col md:flex-row gap-5'>
               <div className='flex flex-col gap-2'>

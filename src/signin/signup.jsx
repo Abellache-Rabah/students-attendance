@@ -4,11 +4,11 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
-import {setAcount} from '../redux/accountReducer'
+import { setAcount } from '../redux/accountReducer'
 export default function Signup(params) {
   const [spE, setSpE] = useState([])
   const dispatch = useDispatch();
-  const [isLoading,setIsLoading]=useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [state, setState] = useState({
     validateusername: [
       "border-gray-300 text-gray-900 dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600",
@@ -60,7 +60,7 @@ export default function Signup(params) {
     const wait = toast.loading("Please wait...")
     let res;
     let req = { email: email.current.value };
-    if (validateEmail(email.current.value) && validateName(sp.current.value) && validateName(fname.current.value) && validatepassword(p.current.value) && validateName(lname.current.value)) {
+    if (validateEmail(email.current.value) && sp.current.value != "" && company.current.value != "" && validateName(fname.current.value) && validatepassword(p.current.value) && validateName(lname.current.value) && p.current.value == rp.current.value) {
       res = await axios.post(
         "https://simpleapi-p29y.onrender.com/teacher/auth",
         req,
@@ -69,16 +69,20 @@ export default function Signup(params) {
             "Content-Type": "application/x-www-form-urlencoded",
           },
         }
-      );
-      if (res.data.res) {
-        toast.update(wait, { render: "Send code", type: "success", isLoading: false,autoClose:2000})
-        setIshedden((prevValue) => !prevValue)
-      } else {
-        toast.update(wait, { render: res.data.msg, type: "error", isLoading: false, data: 2000 ,autoClose:2000})
-      }
+      ).then(res=>{
+        if (res.data.res) {
+          toast.update(wait, { render: "Send code", type: "success", isLoading: false, autoClose: 2000 })
+          setIshedden((prevValue) => !prevValue)
+        } else {
+          toast.update(wait, { render: res.data.mes, type: "error", isLoading: false, data: 2000, autoClose: 2000 })
+        }
+      }).catch(err=>{
+        toast.update(wait, { render: err, type: "error", isLoading: false, data: 2000, autoClose: 2000 })
+      });
+     
     } else {
       await new Promise((resolve) => setTimeout(resolve, 1000))
-      toast.update(wait, { render: "chek your information", type: "error", isLoading: false, data: 2000,autoClose:2000})
+      toast.update(wait, { render: "chek your information", type: "error", isLoading: false, data: 2000, autoClose: 2000 })
     }
     setIsLoading(false)
   }
@@ -99,7 +103,7 @@ export default function Signup(params) {
   async function send() {
     const wait = toast.loading("Please wait...")
     let res;
-    
+
     let req = {
       firstname: fname.current.value,
       lastname: lname.current.value,
@@ -118,17 +122,19 @@ export default function Signup(params) {
             "Content-Type": "application/x-www-form-urlencoded",
           },
         }
-      );
-      if (res.data.res) {
-        dispatch(setAcount(res.data.data))
-        toast.update(wait, { render: "Success", type: "success", isLoading: false, autoClose: true });
-        await new Promise((resolve) => setTimeout(resolve, 1000))
-        navigate("/Student-Attendance/Dashboard/");
-      } else {
-        toast.error(res.data.mes, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
-      }
+      ).then(async res => {
+        if (res.data.res) {
+          dispatch(setAcount(res.data?.data))
+          toast.update(wait, { render: "Success", type: "success", isLoading: false, autoClose: true });
+          await new Promise((resolve) => setTimeout(resolve, 1000))
+          navigate("/Student-Attendance/Dashboard/");
+        } else {
+          toast.update(wait, { render: res.data?.mes, type: "error", isLoading: false, autoClose: true });
+        }
+      }).catch(err => {
+        toast.update(wait, { render: err, type: "error", isLoading: false, autoClose: true });
+      });
+
     }
   }
   function validateEmail(email) {
@@ -339,31 +345,8 @@ export default function Signup(params) {
         </div>
       </div>
       <div className={`w-5/6 md:w-3/5 ${isHidden ? "" : "hidden"}`}>
-        <div
-          className={`${state.err.hidden} flex p-4 text-sm text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800`}
-          role="alert"
-        >
-          <svg
-            aria-hidden="true"
-            className="flex-shrink-0 inline w-5 h-5 mr-3"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fillRule="evenodd"
-              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-              clipRule="evenodd"
-            ></path>
-          </svg>
-          <span className="sr-only">Info</span>
-          <div>
-            <span className="font-medium">Warring!</span>{" "}
-            {state.err.msg.map((e) => e + ",")}.
-          </div>
-        </div>
         <div className="mb-3 dark:text-white">
-        <img className="my-4" src="../img/LogoQr.svg" alt="" />
+          <img className="my-4" src="../img/LogoQr.svg" alt="" />
           <p className="text-zinc-500 mt-3 font-serif">
             Welcome,please enter details.
           </p>
@@ -375,7 +358,6 @@ export default function Signup(params) {
             name="floating_email"
             ref={email}
             onBlur={handle}
-            onChange={handle}
             id="floating_email"
             className={`block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 ${state.validateemail[0]} appearance-none focus:outline-none focus:ring-0 peer`}
             placeholder=" "
@@ -472,17 +454,17 @@ export default function Signup(params) {
           <div className="relative z-0 mb-3 w-full group">
 
             <select name="speaciality" defaultValue={""} ref={sp} id="speaciality" className='block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer'>
-            <option value={""} disabled>specialist</option>
+              <option value={""} disabled>specialist</option>
               {spE && spE.map((e, i) => {
                 return (<option key={i} value={e.specialist}>{e.specialist}</option>)
               })}
             </select>
 
-                    </div>
+          </div>
           <div>
 
             <select ref={company} id="underline_select" defaultValue={""} className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-            <option value={""} disabled>Male Or Female</option>
+              <option value={""} disabled>Male Or Female</option>
               <option value="Male">Male</option>
               <option value="Fimale">Female</option>
             </select>
