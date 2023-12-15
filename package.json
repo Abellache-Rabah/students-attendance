@@ -17,7 +17,7 @@
     "@testing-library/user-event": "^13.5.0",
     "apexcharts": "^3.40.0",
     "autoprefixer": "^9.8.8",
-    "axios": "^1.4.0",
+    "axios": "^1.6.2",
     "circular-json": "^0.5.9",
     "crypto": "^1.0.1",
     "dayjs": "^1.11.7",
