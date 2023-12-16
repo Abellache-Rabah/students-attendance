@@ -22,7 +22,7 @@
     "crypto": "^1.0.1",
     "dayjs": "^1.11.7",
     "file-saver": "^2.0.5",
-    "flowbite": "^1.6.5",
+    "flowbite": "^1.8.1",
     "flowbite-react": "^0.4.4",
     "google-token-decode": "^1.0.2",
     "localforage": "^1.10.0",
